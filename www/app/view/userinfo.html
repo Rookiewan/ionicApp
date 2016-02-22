@@ -1,0 +1,84 @@
+<ion-view hide-tabs on-swipe-right="onSwipeRight()">
+    <div id="main" class="page-base page-1">
+        <!-- #header { -->
+        <div class="wgt-header">
+            <div class="nav"><a href="javascript:;" ng-click="goBack()" class="btn btn-nav-return"><i class="icon icon-nav-return"></i></a></div>
+            <h1 class="title">个人信息</h1>
+            <div class="nav-opt">
+            </div>
+        </div>
+        <!-- } -->
+        <!-- #content {  -->
+        <div class="page-contrain">
+            <ion-scroll has-bouncing="true" class="wgt-userinfo">
+                <div class="arrow-item-list" ng-click="selectPhoto()">
+                    <div class="arrow-item">
+                        <div class="item-title">头像</div>
+                        <div class="item-text"><span class="user-head"><img ng-src="{{user.headPhotoUrl}}" alt=""></span></div><i class="icon icon-item-arrow"></i>
+                    </div>
+                </div>
+                <div class="arrow-item-list">
+                    <div class="arrow-item" ng-click="editUsername()">
+                        <div class="item-title">姓名</div>
+                        <div class="item-text">{{user.username}}</div><i class="icon icon-item-arrow"></i>
+                    </div>
+                    <div class="arrow-item" ng-click="mySex()">
+                        <div class="item-title">性别</div>
+                        <div class="item-text">{{user.sex}}</div><i class="icon icon-item-arrow"></i>
+                    </div>
+                    <div class="arrow-item">
+                        <div class="item-title">生日</div>
+                        <div class="item-text">{{user.birthday}}</div><i class="icon icon-item-arrow"></i>
+                    </div>
+                </div>
+                <div class="arrow-item-list">
+                    <div class="arrow-item">
+                        <div class="item-title">部门</div>
+                        <div class="item-text">{{user.job}}</div><i class="icon icon-item-arrow">           </i>
+                    </div>
+                    <div class="arrow-item" ng-click="myRole()">
+                        <div class="item-title">职务</div>
+                        <div class="item-text">{{user.role}}</div><i class="icon icon-item-arrow"></i>
+                    </div>
+                    <div class="arrow-item">
+                        <div class="item-title">工号</div>
+                        <div class="item-text">{{user.workId}}</div><i class="icon icon-item-arrow"></i>
+                    </div>
+                </div>
+                <div class="arrow-item-list">
+                    <div class="arrow-item" ng-click="editUsertel()">
+                        <div class="item-title">手机</div>
+                        <div class="item-text">{{user.ceilPhone}}</div><i class="icon icon-item-arrow">           </i>
+                    </div>
+                    <div class="arrow-item">
+                        <div class="item-title">邮箱</div>
+                        <div class="item-text">{{user.email}}</div><i class="icon icon-item-arrow"></i>
+                    </div>
+                    <div class="arrow-item">
+                        <div class="item-title">办公电话</div>
+                        <div class="item-text">{{user.workPhone}}</div><i class="icon icon-item-arrow"></i>
+                    </div>
+                    <div class="arrow-item">
+                        <div class="item-title">QQ</div>
+                        <div class="item-text">{{user.QQ}}</div><i class="icon icon-item-arrow"></i>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <div class="tip">
+                        <p>完善我的信息，会有更多惊喜呦！</p>
+                    </div>
+                </div>
+            </ion-scroll>
+        </div>
+        <sys-menu ng-controller="YyWgtSysMenuController" ng-class="{true: 'sysMenuOpen', false: 'sysMenuClosed'}[isSysMenuOpen]"></sys-menu>
+        <!-- } -->
+        <!-- #footer { -->
+        <!-- } -->
+        <!-- .page-sys-menu { -->
+        <!-- } -->
+        <!-- .page-mask {-->
+        <!-- } -->
+        <!-- .page-dialog {-->
+        <!-- }         -->
+    </div>
+</ion-view>

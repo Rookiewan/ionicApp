@@ -1,0 +1,149 @@
+body>.wrap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.ng-enter {
+  z-index: 8001;
+}
+.ng-leave {
+  z-index: 8000;
+}
+.page-login.ng-leave,
+.page-messageBox.ng-leave,
+.page-more.ng-leave
+{
+  -webkit-animation: delayOut 0.3s both ease-in;
+}
+.page-login.ng-enter,
+.page-messageBox.ng-enter
+{
+  -webkit-animation: delayIn 0.3s both ease-in;
+}
+.page-reg.ng-enter,
+.page-forgot.ng-enter,
+.page-messageDetail.ng-enter,
+.page-inviteTypes.ng-enter
+{
+  -webkit-animation: slideInRight 0.3s both ease-in;
+}
+.page-reg.ng-leave,
+.page-forgot.ng-leave,
+.page-messageDetail.ng-leave,
+.page-inviteTypes.ng-leave
+{
+  z-index: 9000;
+  -webkit-animation: slideOutRight 0.3s both ease-in;
+}
+
+.page-user.ng-enter {
+  -webkit-animation: slideInLeft 0.3s both ease-in;
+}
+.page-user.ng-leave {
+  -webkit-animation: slideOutLeft 0.3s both ease-in;
+}
+.wgt-dialog.ng-enter,
+.page-aboutUs.ng-enter
+{
+  -webkit-animation: scaleIn 0.3s both ease-in;
+}
+.wgt-dialog.ng-leave,
+.page-aboutUs.ng-leave
+{
+  -webkit-animation: scaleOut 0.3s both ease-in;
+}
+
+@-webkit-keyframes delayOut {
+  to {
+    opacity: 0;
+  }
+}
+@-webkit-keyframes delayIn {
+  form {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes slideInRight {
+  from {
+    -webkit-transform: translateX(100%);
+  }
+  to {
+    -webkit-transform: translateX(0);
+  }
+}
+@-webkit-keyframes slideOutRight {
+  to {
+    -webkit-transform: translateX(100%);
+  }
+}
+@-webkit-keyframes slideInLeft {
+  from {
+    -webkit-transform: translateX(-100%);
+  }
+  to {
+    -webkit-transform: translateX(0);
+  }
+}
+@-webkit-keyframes slideOutLeft {
+  from {
+    -webkit-transform: translateX(0);
+  }
+  to {
+    -webkit-transform: translateX(-100%);
+  }
+}
+
+
+@-webkit-keyframes scaleIn {
+  from {
+    -webkit-transform: scale(0);
+  }
+  to {
+    -webkit-transform: scale(1);
+  }
+}
+@-webkit-keyframes scaleOut {
+  from {
+    -webkit-transform: scale(1);
+  }
+  to {
+    -webkit-transform: scale(0);
+  }
+}
+.wgt-department-select {
+  -webkit-transform: translateY(-100%);
+  -webkit-transition: all 0.3s;
+}
+.wgt-fq-news .select-filter i {
+  -webkit-transition: all 0.3s;
+}
+.wgt-fq-news .select-filter i.close {
+  -webkit-transform: rotate(180deg);
+}
+.wgt-fq-news .select-filter i.open {
+  -webkit-transform: rotate(0);
+}
+.page-sys-menu {
+  -webkit-transform: translateY(100%);
+  -webkit-transition: all 0.3s;
+}
+.page-mask {
+  display: none;
+  -webkit-transition: all 0.3s;
+}
+.sysMenuOpen .page-sys-menu{
+  -webkit-transform: translateY(0);
+}
+.sysMenuOpen .page-mask {
+  display: block;
+}
+.sysMenuClosed .page-sys-menu{
+  -webkit-transform: translateY(100%);
+}
+.sysMenuClosed .page-mask {
+  display: none;
+}

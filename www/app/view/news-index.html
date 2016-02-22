@@ -1,0 +1,46 @@
+<ion-view show-tabs>
+    <div id="main" class="page-base page-1">
+        <!-- #header { -->
+        <div class="wgt-header">
+            <div class="nav">
+            </div>
+            <h1 class="title">优芽企业</h1>
+            <div class="nav-opt"><a href="javascript:;" ng-click="message()" class="btn btn-message"><i class="icon icon-new-index-message"></i></a></div>
+        </div>
+        <!-- } -->
+        <!-- #content {  -->
+        <div class="page-contrain">
+            <div class="wgt-news-index-banner"> <img ng-src="{{banner.imgUrl}}">
+                <div class="banner-content">
+                    <div class="banner-inner">
+                        <div class="banner-title">
+                            {{banner.title}}——{{banner.author}}分享
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ion-scroll has-bouncing="true" class="wgt-news-index-content">
+                <ion-refresher pulling-text="下拉刷新" on-refresh="doRefresh()"></ion-refresher>
+                <div class="item-list">
+                    <div class="item" ng-repeat="listItem in lists track by $index">
+                        <div class="item-img">
+                            <a href="javascript:;" ng-click="detail(listItem.id)"><img ng-src="{{listItem.imgUrl}}"></a>
+                        </div>
+                        <div class="item-body">
+                            <div class="item-header">
+                                <h5 class="item-title" ng-click="detail(listItem.id)">{{listItem.title}}</h5><span class="item-status" ng-if="listItem.isExtension == 1"> 推广</span>
+                            </div>
+                            <div class="item-con">
+                                <div class="item-summary">{{listItem.summary}}</div>
+                                <div class="item-time">{{listItem.time}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ion-infinite-scroll on-infinite="loadMore()" distance="-10%"></ion-infinite-scroll>
+            </ion-scroll>
+        </div>
+        <!-- } -->
+        <!-- #footer { -->
+    </div>
+</ion-view>

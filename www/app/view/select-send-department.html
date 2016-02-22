@@ -1,0 +1,35 @@
+<ion-view on-swipe-right="onSwipeRight()">
+    <div id="main" class="page-base page-1">
+        <!-- #header { -->
+        <div class="wgt-header">
+            <div class="nav">
+                <a href="javascript:;" ng-click="goBack()" class="btn btn-nav-return">
+                    <i class="icon icon-nav-return"></i>
+                </a>
+            </div>
+            <h1 class="title">选择赠予人</h1>
+            <div class="nav-opt"></div>
+        </div>
+        <!-- } -->
+        <!-- #content {  -->
+        <div class="page-contrain">
+            <ion-scroll>
+                <div class="arrow-item-list">
+                    <div class="arrow-item" ng-repeat="ROU in ROUList track by $index" ng-click="selectDepartment(ROU.id, ROU.name)">
+                        <div class="item-title">{{ROU.name}}ROU</div>
+                        <i class="icon icon-item-arrow"></i>
+                    </div>
+                </div>
+            </ion-scroll>
+        </div>
+        <!-- } -->
+        <!-- #footer { -->
+        <!-- } -->
+        <!-- .page-sys-menu { -->
+        <!-- } -->
+        <!-- .page-mask {-->
+        <!-- } -->
+        <!-- .page-dialog {-->
+        <!-- }         -->
+    </div>
+</ion-view>

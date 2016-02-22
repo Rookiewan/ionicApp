@@ -1,0 +1,60 @@
+<ion-view on-swipe-right="onSwipeRight()">
+        <div id="main" class="page-base page-0">
+            <div class="wgt-header">
+                <div class="nav"><a href="#login" class="btn btn-nav-return"><i class="icon icon-nav-return"></i></a></div>
+                <h1 class="title">注 册</h1>
+                <div class="nav-opt">
+                </div>
+            </div>
+            <!-- } -->
+            <!-- #content {  -->
+            <div class="page-contrain">
+                <form class="form wgt-form-reg" name="regForm">
+                    <div class="form-group">
+                        <label for="" class="form-label">用户名 </label>
+                        <div class="input">
+                            <input ng-model="username"  required ng-minlength="2" ng-maxlength="18" name="regName" type="text" placeholder="可以输入汉字、字母或数字,最长不超过18个字符" class="form-control" ng-focus="usernameFocus = true;" ng-blur="usernameFocus = false;">
+                            <del class="icon icon-input-clear" ng-show="username.length>0 && usernameFocus" ng-click="username=''"> </del>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="form-label">密码</label>
+                        <div class="input">
+                            <input ng-model="password"  required ng-minlength="6" ng-maxlength="14" name="regPassword" type="{{pwdType}}" placeholder="6-14位，字母或数字" class="form-control">
+                            <i class="icon icon-view" ng-class="{'disabled': !hidePwd}" ng-click="toggleType()"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="form-label">手机号</label>
+                        <div class="input">
+                            <input ng-model="ceilPhone"  required ng-minlength="11" ng-maxlength="11" ng-pattern="/^[0-9]{11}$/" name="phone" type="text" placeholder="请输入中国大陆手机号码" class="form-control" ng-focus="ceilPhoneFocus = true;" ng-blur="ceilPhoneFocus = false;">
+                            <del class="icon icon-input-clear" ng-show="ceilPhone.length>0 && ceilPhoneFocus" ng-click="ceilPhone=''"></del>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="form-label">验证码</label>
+                        <div class="input">
+                            <input type="text" placeholder="" class="form-control">
+                        </div>
+                        <button class="btn btn-1" ng-class="{'disabled': isGetCheckCode}" ng-click="getCheckCode()">{{checkCodeText}}</button>
+                    </div>
+                    <div class="form-opts">
+                        <button class="btn btn-0" ng-click="reg()" ng-disabled="regForm.$pristine || regForm.$invalid">完 成</button>
+                    </div>
+                    <div class="form-footer"><span class="link-2">已阅读并同意<a href="javascript:;">
+                 
+                《用户服务协议》</a></span></div>
+                </form>
+            </div>
+            <!-- } -->
+            <!-- #footer { -->
+            <!-- } -->
+            <!-- .page-sys-menu { -->
+            <!-- } -->
+            <!-- .page-mask {-->
+            <!-- } -->
+            <!-- .page-dialog {-->
+            <!-- }         -->
+        </div>
+    
+</ion-view>

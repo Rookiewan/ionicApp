@@ -1,0 +1,14 @@
+<div class="page-mask"></div>
+<div class="wgt-dialog">
+  <div class="dlg-title" ng-if="!newVersion">{{popText}}</div>
+
+  <div class="dlg-title-1" ng-if="newVersion">发现新版本 {{versionNow}}
+    <ol>
+      <li ng-repeat="updText in updTexts track by $index">{{updText}}</li>
+    </ol>
+  </div>
+  <div class="dlg-opts">
+    <button class="btn" ng-click="cancle()">{{btnL}}</button>
+    <button class="btn" ng-click="ok(opt.fun)">{{btnR}}</button>
+  </div>
+</div>

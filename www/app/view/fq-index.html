@@ -1,0 +1,74 @@
+<ion-view show-tabs>
+    <div id="main" class="page-base page-1">
+        <!-- #header { -->
+        <div class="wgt-header">
+            <div class="nav">
+            </div>
+            <h1 class="title">福券</h1>
+            <div class="nav-opt">
+            </div>
+        </div>
+        <!-- } -->
+        <!-- #content {  -->
+        <div class="page-contrain">
+            <div class="wgt-fq-header">
+                <ul>
+                    <li ng-click="myFq()"><i class="icon icon-fq-my"></i><span>我的福券</span></li>
+                    <li ng-click="send()"><i class="icon icon-fq-sent"></i><span>派福券</span></li>
+                </ul>
+            </div>
+            <div class="wgt-fq-news">
+                <div class="header">
+                    <div class="title">福券动态</div>
+                    <div class="select-filter" ng-click="selectFilter()"><span>产品部</span><i class="icon icon-filter-arrow" ng-class="{true: 'open', false: 'close'}[isOpen]">           </i></div>
+                </div>
+                <ion-scroll has-bouncing="true" class="arrow-item-list radio-list wgt-department-select" ng-style="selectListOpen">
+                    <ion-refresher pulling-text="下拉刷新" on-refresh="doDpListRefresh()"></ion-refresher>
+                    <div class="arrow-item" ng-repeat="ROU in ROUList track by $index">
+                        <input type="radio" name="ROU" value="{{ROU.id}}" ng-click="choseROU(ROU.id)" ng-checked="ROU.id == ROUIdSelect">
+                        <div class="item-title">{{ROU.name}}</div>
+                        <div class="item-text"><i class="icon icon-radio">            </i></div>
+                    </div>
+                </ion-scroll>
+                <div class="opts" ng-show="isOpen">
+                    <a href="javascript:;" ng-click="selectROU()">确定</a>
+                </div>
+                <ion-scroll has-bouncing="true" class="wgt-fq-list">
+                    <ion-refresher pulling-text="下拉刷新" on-refresh="doFqListRefresh()"></ion-refresher>
+                    <div class="item-list">
+                        <!-- <div class="inner"> -->
+                        <div class="item" ng-if="!isListEmpty" ng-repeat="listItem in list track by $index">
+                            <div class="item-type">
+                                <div class="item-img" ng-click="fqDetail(1);"><img ng-src="{{listItem.imgUrl}}"></div><span class="item-type-name">{{listItem.typeName}}</span>
+                            </div>
+                            <div class="item-body">
+                                <div class="item-header">
+                                    <h5 class="item-title" ng-click="fqDetail(1);">{{listItem.title}}</h5>
+                                </div>
+                                <div class="item-con">
+                                    <div class="item-summary">{{listItem.summary}}</div>
+                                </div>
+                                <div class="item-footer"><span class="item-sender">
+                    <label>赠送人：</label><span>{{listItem.sender}}</span></span><span class="item-time">{{listItem.time}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ion-infinite-scroll on-infinite="loadMore()" distance="-10%"></ion-infinite-scroll>
+                    <div class="item-empty" ng-if="isListEmpty"><i class="icon icon-item-empty"></i>
+                        <div class="message">还没有福券动态哟，赶快派发第一张福券上头条吧~</div>
+                    </div>
+                </ion-scroll>
+            </div>
+        </div>
+        <!-- } -->
+        <!-- #footer { -->
+        <!-- } -->
+        <!-- .page-sys-menu { -->
+        <!-- } -->
+        <!-- .page-mask {-->
+        <!-- } -->
+        <!-- .page-dialog {-->
+        <!-- }         -->
+    </div>
+</ion-view>

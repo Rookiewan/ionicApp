@@ -1,0 +1,38 @@
+<ion-view on-swipe-right="onSwipeRight()">
+    <div id="main" class="page-base page-1">
+      <!-- #header { -->
+      <div class="wgt-header">
+        <div class="nav"><a href="javascript:;" ng-click="goBack()" class="btn btn-nav-return"><i class="icon icon-nav-return"></i></a></div>
+        <h1 class="title">性别</h1>
+        <div class="nav-opt">
+        </div>
+      </div>
+      <!-- } -->
+      <!-- #content {  -->
+      <div class="page-contrain">   
+        <ion-scroll>    
+        <div class="arrow-item-list radio-list">          
+          <div class="arrow-item">
+            <input type="radio" name="sex" ng-checked="sex == '男'" ng-click="changeSex('男');">
+            <div class="item-title">男</div>
+            <div class="item-text"><i class="icon icon-radio"></i></div>
+          </div>
+          <div class="arrow-item">
+            <input type="radio" name="sex" ng-checked="sex == '女'" ng-click="changeSex('女');">
+            <div class="item-title">女</div>
+            <div class="item-text"><i class="icon icon-radio"></i></div>
+          </div>
+        </div>
+      </ion-scroll>
+      </div>
+      <!-- } -->
+      <!-- #footer { -->
+      <!-- } -->
+      <!-- .page-sys-menu { -->
+      <!-- } -->
+      <!-- .page-mask {-->
+      <!-- } -->
+      <!-- .page-dialog {-->
+      <!-- }         -->
+    </div>
+  </ion-view>

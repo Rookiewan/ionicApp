@@ -1,0 +1,6 @@
+<div class="arrow-item-list" ng-repeat="arrowItem in arrowItems track by $index">
+  <div class="arrow-item" ng-repeat="item in arrowItem.items track by $index">
+    <div class="item-title">{{item.title}}</div>
+    <div class="item-text" ng-if="item.itemText">{{item.text}}<span class="userHead" ng-if="item.userHead"><img ng-src="{{item.userHeadSrc}}" alt=""></span></div><i class="icon icon-item-arrow" ng-if="item.icon"></i>
+  </div>
+</div>

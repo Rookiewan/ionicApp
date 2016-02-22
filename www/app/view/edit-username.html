@@ -1,0 +1,40 @@
+<ion-view on-swipe-right="onSwipeRight()">
+    <div id="main" class="page-base page-1">
+      <!-- #header { -->
+      <div class="wgt-header">
+        <div class="nav"><a href="javascript:;" ng-click="goBack()" class="btn-text">取消</a></div>
+        <h1 class="title">姓名</h1>
+        <div class="nav-opt"><a href="javascript:;" ng-click="save()" class="btn-text">保存</a></div>
+      </div>
+      <!-- } -->
+      <!-- #content {  -->
+      <div class="page-contrain">
+        <ion-scroll>
+        <div class="form wgt-form-username">           
+          <div class="form-sub">
+            <div class="form-group">                       
+              <div class="input">
+                <input type="text" placeholder="姓名" ng-model="user.username" class="form-control" ng-focus="usernameFocus = true;" ng-blur="usernameFocus = false;">
+                <del class="icon icon-input-clear" ng-show="user.username.length>0 && usernameFocus" ng-click="user.username=''"> </del>
+              </div>
+            </div>
+          </div>
+          <div class="form-footer">
+            <div class="tip">
+              <p>请填写需要更换的姓名哦</p>
+            </div>
+          </div>
+        </div>
+      </ion-scroll>
+      </div>
+      <!-- } -->
+      <!-- #footer { -->
+      <!-- } -->
+      <!-- .page-sys-menu { -->
+      <!-- } -->
+      <!-- .page-mask {-->
+      <!-- } -->
+      <!-- .page-dialog {-->
+      <!-- }         -->
+    </div>
+  </ion-view>

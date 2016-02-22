@@ -1,0 +1,35 @@
+[
+    {
+        "No": "001",
+        "userName": "zhangsan",
+        "password": "111",
+        "age": 18,
+        "sex": "男",
+        "mobilePhone": "11111111111"
+    },
+    {
+        "No": "002",
+        "userName": "lisi",
+        "password": "222",
+        "age": 17,
+        "sex": "男",
+        "mobilePhone": "22222222222"
+    },
+    {
+        "No": "003",
+        "userName": "小红",
+        "password": "333",
+        "age": 16,
+        "sex": "女",
+        "mobilePhone": "33333333333"
+    },
+    {
+        "No": "004",
+        "userName": "Rookie_wan",
+        "password": "123456",
+        "age": 23,
+        "sex": "男",
+        "mobilePhone": "18030042074",
+        "headPhotoUrl": "upload/user-photo.png"
+    }
+]

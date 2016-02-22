@@ -1,0 +1,53 @@
+<ion-view hide-tabs on-swipe-right="onSwipeRight()">
+    <div id="main" class="page-base page-1">
+        <!-- #header { -->
+        <div class="wgt-header">
+            <div class="nav"><a href="javascript:;" ng-click="goBack()" class="btn btn-nav-return"><i class="icon icon-nav-return"></i></a></div>
+            <h1 class="title">我的福券</h1>
+            <div class="nav-opt">
+            </div>
+        </div>
+        <!-- } -->
+        <!-- #content {  -->
+        <div class="page-contrain">
+            <ul class="com-tabs">
+                <li ng-class="{'active': reActive}" ng-click="received()"><a href="javascript:;">收到的</a></li>
+                <li ng-class="{'active': seActive}" ng-click="sent()"><a href="javascript:;">送出的</a></li>
+            </ul>
+            <ion-scroll has-bouncing="true" class="wgt-fq-list">
+                <ion-refresher
+                    pulling-text="下拉刷新"
+                    on-refresh="doRefresh()"
+                ></ion-refresher>
+                <div class="item-list">
+                    <div class="item" ng-repeat="listItem in list track by $index">
+                        <div class="item-type">
+                            <div class="item-img"><img ng-src="{{listItem.imgUrl}}"></div><span class="item-type-name">{{listItem.typeName}}</span>
+                        </div>
+                        <div class="item-body">
+                            <div class="item-inner">
+                                <div class="item-header">
+                                    <h5 class="item-title" ng-click="detail(listItem.id)">{{listItem.title}}</h5><a href="javascript:;" ng-if="listItem.opt" class="item-opt" ng-click="sendBack()">回赠</a>
+                                </div>
+                                <div class="item-con">
+                                    <div class="item-summary">{{listItem.summary}}<a ng-if="listItem.link" ng-href="{{listItem.linkUrl}}">{{listItem.linkText}}</a></div>
+                                </div>
+                            </div>
+                            <div class="item-footer"><span class="item-sender">
+                    <label ng-show="listItem.isReceived">赠送人：</label><span ng-show="listItem.isReceived">{{listItem.sender}}</span></span><span class="item-time">{{listItem.time}}</span></div>
+                        </div>
+                    </div>
+                </div>
+            </ion-scroll>
+        </div>
+        <!-- } -->
+        <!-- #footer { -->
+        <!-- } -->
+        <!-- .page-sys-menu { -->
+        <!-- } -->
+        <!-- .page-mask {-->
+        <!-- } -->
+        <!-- .page-dialog {-->
+        <!-- }         -->
+    </div>
+</ion-view>

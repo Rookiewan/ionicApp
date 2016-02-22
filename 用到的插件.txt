@@ -1,0 +1,5 @@
+https://github.com/wymsee/cordova-imagePicker.git
+
+org.apache.cordova.file-transfer
+
+org.apache.cordova.camera

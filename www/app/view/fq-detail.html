@@ -1,0 +1,56 @@
+<ion-view hide-tabs on-swipe-right="onSwipeRight()">
+    <div id="main" class="page-base page-1">
+      <!-- #header { -->
+      <div class="wgt-header">
+        <div class="nav"><a href="javascript:;" ng-click="goBack()" class="btn btn-nav-return"><i class="icon icon-nav-return"></i></a></div>
+        <h1 class="title">日行一善</h1>
+        <div class="nav-opt">
+        </div>
+      </div>
+      <!-- } -->
+      <!-- #content {  -->
+      <div class="page-contrain">
+        <ion-scroll>
+        <div class="wgt-fq-detail">
+          <div class="item-receiver">
+            <label>送给:</label><span>{{fqDetail.sentTo}}</span>
+          </div>
+          <div class="item">
+            <div class="item-img">
+              <div class="user-head"><img ng-src="{{fqDetail.photoUrl}}"></div>
+            </div>
+            <div class="item-inner">
+              <div class="item-body">
+                <div class="item-sender"><strong>{{fqDetail.sentFrom}}</strong>(<span>{{fqDetail.position}}</span>)</div><span class="item-time">{{fqDetail.sentTime}}</span>
+              </div>
+              <div class="item-con">
+                <div class="item-type"><img ng-src="{{fqDetail.imgUrl}}"></div>
+                <p>{{fqDetail.content}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="wgt-fq-reply">
+          <div class="item" ng-repeat="reply in fqDetail.reply track by $index">
+            <span class="item-user">{{reply.name}}:</span>
+            <span class="item-con">{{reply.content}}</span>
+          </div>
+          <div class="form-group">
+            <div class="input">
+              <input type="text" placeholder="我也说一句..." class="form-control">
+            </div>
+          </div>
+        </div>
+      </ion-scroll>
+      </div>
+      <!-- } -->
+      <!-- #footer { -->
+      <!-- } -->
+      <!-- .page-sys-menu { -->
+      <!-- } -->
+      <!-- .page-mask {-->
+      <!-- } -->
+      <!-- .page-dialog {-->
+      <!-- }         -->
+    </div>
+  </ion-view>

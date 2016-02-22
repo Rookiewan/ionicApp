@@ -1,0 +1,52 @@
+{
+    "list": [
+        {
+            "id": 1,
+            "imgUrl": "upload/news-index-item-photo-0.png",
+            "title": "祝福本月的6位寿星",
+            "summary": "在这个特别的日子里送你最真挚的祝福:生日快乐！",
+            "time": "15:10",
+            "isExtension" : true
+        },
+        {
+            "id": 2,
+            "imgUrl": "upload/news-index-item-photo-0.png",
+            "title": "祝福本月的6位寿星",
+            "summary": "在这个特别的日子里送你最真挚的祝福:生日快乐！",
+            "time": "15:10",
+            "isExtension" : false
+        },
+        {
+            "id": 3,
+            "imgUrl": "upload/news-index-item-photo-0.png",
+            "title": "祝福本月的6位寿星",
+            "summary": "在这个特别的日子里送你最真挚的祝福:生日快乐！",
+            "time": "15:10",
+            "isExtension" : false
+        },
+        {
+            "id": 4,
+            "imgUrl": "upload/news-index-item-photo-0.png",
+            "title": "祝福本月的6位寿星",
+            "summary": "在这个特别的日子里送你最真挚的祝福:生日快乐！",
+            "time": "15:10",
+            "isExtension" : true
+        },
+        {
+            "id": 5,
+            "imgUrl": "upload/news-index-item-photo-0.png",
+            "title": "祝福本月的6位寿星",
+            "summary": "在这个特别的日子里送你最真挚的祝福:生日快乐！",
+            "time": "15:10",
+            "isExtension" : false
+        },
+        {
+            "id": 6,
+            "imgUrl": "upload/news-index-item-photo-0.png",
+            "title": "祝福本月的100位寿星",
+            "summary": "在这个特别的日子里送你最真挚的祝福:生日快乐！",
+            "time": "星期六",
+            "isExtension" : true
+        }
+    ]
+}

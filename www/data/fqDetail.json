@@ -1,0 +1,69 @@
+{
+    "received":[
+        {
+            "id": 1,
+            "sentTo": "晓明",
+            "sentFrom": "信多多",
+            "position": "研发中心ROU",
+            "photoUrl": "upload/fq-detail-photo.png",
+            "sentTime": "15:30",
+            "hasImg": true,
+            "imgUrl": "upload/fq-detail-image.png",
+            "content": "非常感谢你帮助了我，送你一张福券以示感谢。",
+            "reply":[
+                {
+                    "name": "黄晓明",
+                    "content": "很高兴能够帮助到你！"
+                },
+                {
+                    "name": "蓝晓明",
+                    "content": "很高兴能够帮助到你！"
+                },
+                {
+                    "name": "绿晓明",
+                    "content": "很高兴能够帮助到你！"
+                },
+                {
+                    "name": "红晓明",
+                    "content": "很高兴能够帮助到你！"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "sentTo": "万芳",
+            "sentFrom": "万多多",
+            "position": "研发中心ROU",
+            "photoUrl": "upload/fq-detail-photo.png",
+            "sentTime": "15:30",
+            "hasImg": true,
+            "imgUrl": "upload/fq-detail-image.png",
+            "content": "非常感谢你帮助了我，送你一张福券以示感谢。",
+            "reply":[
+                {
+                    "name": "万芳",
+                    "content": "客气，很高兴能够帮助到你！"
+                }
+            ]
+        }
+    ],
+    "sent":[
+        {
+            "id": 1,
+            "sentTo": "万芳",
+            "sentFrom": "万多多",
+            "position": "研发中心ROU",
+            "photoUrl": "upload/fq-detail-photo.png",
+            "sentTime": "15:30",
+            "hasImg": true,
+            "imgUrl": "upload/fq-detail-image.png",
+            "content": "非常感谢你帮助了我，送你一张福券以示感谢。",
+            "reply":[
+                {
+                    "name": "万芳",
+                    "content": "客气，很高兴能够帮助到你！"
+                }
+            ]
+        }
+    ]
+}

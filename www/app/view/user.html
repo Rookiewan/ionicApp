@@ -1,0 +1,50 @@
+<ion-view show-tabs>
+    <div id="main" class="page-base page-1">
+      <!-- #header { -->
+      <div class="wgt-header">
+        <div class="nav">
+        </div>
+        <h1 class="title">我</h1>
+        <div class="nav-opt">
+        </div>
+      </div>
+      <!-- } -->
+      <!-- #content {  -->
+      <div class="page-contrain">
+        <div class="wgt-user-header" style="height: {{distortion.headerH}};">
+          <div class="user-image" ng-click="userInfo()" style="-webkit-transform: scale({{distortion.scaleS}}) translateY({{distortion.imageDown}});"><img ng-src="{{user.headPhotoUrl}}" alt=""></div><span class="user-name" ng-click="userInfo()" style="-webkit-transform: translateY({{distortion.nameDown}});">{{user.username}}<span>{{user.sex == undefined ? null : (user.sex == '男' ? '♂' : '♀')}}</span></span>
+        </div>
+        <ion-scroll>
+        <div class="wgt-user-content">
+          <div class="arrow-item-list">
+            <div class="arrow-item" ng-click="invitePartner()">
+              <div class="item-title"><i class="icon icon-user-invite"></i>邀请伙伴加入</div>
+              <div class="item-text"></div><i class="icon icon-item-arrow"></i>
+            </div>
+            <div class="arrow-item" ng-click="myCompany()">
+              <div class="item-title"><i class="icon icon-user-friends"></i>我的机构</div>
+              <div class="item-text">{{user.companyName}}</div><i class="icon icon-item-arrow"></i>
+            </div>
+            <div class="arrow-item" ng-click="updPwd()">
+              <div class="item-title"><i class="icon icon-user-account"></i>修改密码</div>
+              <div class="item-text"></div><i class="icon icon-item-arrow"></i>
+            </div>
+            <div class="arrow-item" ng-click="more()">
+              <div class="item-title"><i class="icon icon-user-about"></i>更多</div>
+              <div class="item-text"></div><i class="icon icon-item-arrow"></i>
+            </div>
+          </div>
+        </div>
+      </ion-scroll>
+      </div>
+      <!-- } -->
+      <!-- #footer { -->
+      <!-- } -->
+      <!-- .page-sys-menu { -->
+      <!-- } -->
+      <!-- .page-mask {-->
+      <!-- } -->
+      <!-- .page-dialog {-->
+      <!-- }         -->
+    </div>
+</ion-view>

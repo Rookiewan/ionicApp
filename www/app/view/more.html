@@ -1,0 +1,45 @@
+<ion-view hide-tabs on-swipe-right="onSwipeRight()">
+    <div id="main" class="page-base page-1">
+      <!-- #header { -->
+      <div class="wgt-header">
+        <div class="nav"><a href="javascript:;" ng-click="goBack()" class="btn btn-nav-return"><i class="icon icon-nav-return"></i></a></div>
+        <h1 class="title">更多</h1>
+        <div class="nav-opt">
+        </div>
+      </div>
+      <!-- } -->
+      <!-- #content {  -->
+      <div class="page-contrain"> 
+        <ion-scroll>
+        <div class="arrow-item-list">
+          <div class="arrow-item" ng-click="checkUpd()">
+            <div class="item-title">检查更新                </div>
+          </div>
+          <div class="arrow-item" ng-click="clearCache()">
+            <div class="item-title">清除缓存                </div>
+          </div>
+          <div class="arrow-item">
+            <div class="item-title">使用帮助</div>
+          </div>
+          <div class="arrow-item" ng-click="aboutUs()">
+            <div class="item-title">关于我们               </div>
+          </div>
+        </div>
+        <div class="form-opts">
+          <button class="btn btn-3" ng-click="loginOut()">退出登录</button>
+        </div>
+      </ion-scroll>
+      </div>
+      <!-- } -->
+      <!-- #footer { -->
+      <!-- } -->
+      <!-- .page-sys-menu { -->
+      <!-- } -->
+      <!-- .page-mask {-->
+      
+      <!-- } -->
+      <!-- .page-dialog {-->
+      <pop ng-controller="YyWgtPopupController" ng-class="{true: 'popOpen', false: 'popClosed'}[isPopOpen]"></pop>
+      <!-- }         -->
+    </div>
+  </ion-view>

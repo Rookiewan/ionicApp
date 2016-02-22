@@ -1,0 +1,46 @@
+<ion-view hide-tabs on-swipe-right="onSwipeRight()">
+    <div id="main" class="page-base page-1">
+      <!-- #header { -->
+      <div class="wgt-header">
+        <div class="nav"><a href="javascript:;" ng-click="goBack()" class="btn btn-nav-return"><i class="icon icon-nav-return"></i></a></div>
+        <h1 class="title">消&nbsp;&nbsp;&nbsp;息</h1>
+        <div class="nav-opt">
+        </div>
+      </div>
+      <!-- } -->
+      <!-- #content {  -->
+      <div class="page-contrain">
+        <ion-scroll has-bouncing="true" class="wgt-message-list">
+          <ion-refresher
+              pulling-text="下拉刷新"
+              on-refresh="doRefresh()"
+          ></ion-refresher>
+          <div class="item-list" ng-repeat="listItem in lists track by $index">
+            <div class="item"><i class="icon {{listItem.icon}}"></i>
+              <div class="item-body">
+                <div class="item-header">
+                  <h5 class="item-title" ng-click="detail(listItem.id)">{{listItem.title}}</h5><span class="item-time">{{listItem.time}}</span>
+                </div>
+                <div class="item-con">
+                  <div class="item-summary">{{listItem.summary}}</div>
+                  <div class="item-num" ng-if="listItem.isNew" ng-click="doNewMsg()">{{listItem.num}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ion-scroll>
+      </div>
+      <sys-menu ng-controller="YyWgtSysMenuController" ng-class="{true: 'sysMenuOpen', false: 'sysMenuClosed'}[isSysMenuOpen]"></sys-menu>
+      <!-- } -->
+      <!-- #footer { -->
+      <!-- } -->
+      <!-- .page-sys-menu { -->
+      
+      <!-- } -->
+      <!-- .page-mask {-->
+      
+      <!-- } -->
+      <!-- .page-dialog {-->
+      <!-- }         -->
+    </div>
+  </ion-view>

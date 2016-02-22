@@ -1,0 +1,145 @@
+<ion-view hide-tabs on-swipe-right="onSwipeRight()">
+    <div id="main" class="page-base page-1" ng-controller="YyFqSendController">
+      <!-- #header { -->
+      <div class="wgt-header">
+        <div class="nav"><a href="javascript:;" ng-click="goBack()" class="btn btn-nav-return"><i class="icon icon-nav-return"></i></a></div>
+        <h1 class="title">派福券</h1>
+        <div class="nav-opt"><a href="javascript:;" ng-click="send()" class="btn-text">发送</a></div>
+      </div>
+      <!-- } -->
+      <!-- #content {  -->
+      <div class="page-contrain">
+        <ul class="com-tabs">
+          <li ng-class="{'fq': 'active'}[whichActive]" ng-click="changeActive('fq');"><a href="javascript:;">福券</a></li>
+          <li ng-class="{'zf': 'active'}[whichActive]" ng-click="changeActive('zf');"><a href="javascript:;">祝福</a></li>
+          <li ng-class="{'js': 'active'}[whichActive]" ng-click="changeActive('js');"><a href="javascript:;">警示</a></li>
+        </ul>
+        <div class="wgt-fq-type" ng-show="whichActive == 'fq'">
+          <div class="items-view">
+            <ion-scroll direction='x' scrollbar-x="false">
+            <ul>
+              <li ng-class="{1: 'selected'}[imgFq]" ng-click="changeCheck('Fq', 1);">
+                <label>
+                  <input type="radio" name="sendFq"><i class="icon icon-fq-circle-ok" ng-if="imgFq == 1"></i><span class="type-img"><img src="upload/fq-send-image-0.png" alt=""></span><strong class="type-name">每日一善</strong><span class="type-info">(剩余<b>5</b>张)</span>
+                </label>
+              </li>
+              <li ng-class="{2: 'selected'}[imgFq]" ng-click="changeCheck('Fq', 2);">
+                <label>
+                  <input type="radio" name="sendFq"><i class="icon icon-fq-circle-ok" ng-if="imgFq == 2"></i><span class="type-img"><img src="upload/fq-send-image-1.png" alt=""></span><strong class="type-name">每日一善</strong><span class="type-info">(剩余<b>5</b>张)</span>
+                </label>
+              </li>
+              <li ng-class="{3: 'selected'}[imgFq]" ng-click="changeCheck('Fq', 3);">
+                <label>
+                  <input type="radio" name="sendFq"><i class="icon icon-fq-circle-ok" ng-if="imgFq == 3"></i><span class="type-img"><img src="upload/fq-send-image-2.png" alt=""></span><strong class="type-name">每日一善</strong><span class="type-info">(剩余<b>5</b>张)</span>
+                </label>
+              </li>
+              <li ng-class="{4: 'selected'}[imgFq]" ng-click="changeCheck('Fq', 4);">
+                <label>
+                  <input type="radio" name="sendFq"><i class="icon icon-fq-circle-ok" ng-if="imgFq == 4"></i><span class="type-img"><img src="upload/fq-send-image-2.png" alt=""></span><strong class="type-name">每日一善</strong><span class="type-info">(剩余<b>5</b>张)</span>
+                </label>
+              </li>
+              <li ng-class="{5: 'selected'}[imgFq]" ng-click="changeCheck('Fq', 5);">
+                <label>
+                  <input type="radio" name="sendFq"><i class="icon icon-fq-circle-ok" ng-if="imgFq == 5"></i><span class="type-img"><img src="upload/fq-send-image-2.png" alt=""></span><strong class="type-name">每日一善</strong><span class="type-info">(剩余<b>5</b>张)</span>
+                </label>
+              </li>
+            </ul>
+            </ion-scroll>
+          </div>
+          <div class="items-control">
+            <ul>
+              <li class="active"><a href="javascript:;"></a></li>
+              <li><a href="javascript:;"></a></li>
+              <li><a href="javascript:;"></a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="wgt-fq-type" ng-show="whichActive == 'zf'">
+          <div class="items-view">
+            <ion-scroll direction='x' scrollbar-x="false">
+            <ul>
+              <li ng-class="{1: 'selected'}[imgZf]" ng-click="changeCheck('Zf', 1);">
+                <label>
+                  <input type="radio" name="sendZf"><i class="icon icon-fq-circle-ok" ng-if="imgZf == 1"></i><span class="type-img"><img src="upload/fq-send-image-0.png" alt=""></span><strong class="type-name">每日一善</strong><span class="type-info">(剩余<b>5</b>张)</span>
+                </label>
+              </li>
+              <li ng-class="{2: 'selected'}[imgZf]" ng-click="changeCheck('Zf', 2);">
+                <label>
+                  <input type="radio" name="sendZf"><i class="icon icon-fq-circle-ok" ng-if="imgZf == 2"></i><span class="type-img"><img src="upload/fq-send-image-1.png" alt=""></span><strong class="type-name">每日一善</strong><span class="type-info">(剩余<b>5</b>张)</span>
+                </label>
+              </li>
+              <li ng-class="{3: 'selected'}[imgZf]" ng-click="changeCheck('Zf', 3);">
+                <label>
+                  <input type="radio" name="sendZf"><i class="icon icon-fq-circle-ok" ng-if="imgZf == 3"></i><span class="type-img"><img src="upload/fq-send-image-2.png" alt=""></span><strong class="type-name">每日一善</strong><span class="type-info">(剩余<b>5</b>张)</span>
+                </label>
+              </li>
+            </ul>
+          </ion-scroll>
+          </div>
+          <div class="items-control">
+            <ul>
+              <li class="active"><a href="javascript:;"></a></li>
+              <li><a href="javascript:;"></a></li>
+              <li><a href="javascript:;"></a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="wgt-fq-type" ng-show="whichActive == 'js'">
+          <div class="items-view">
+            <ion-scroll direction='x' scrollbar-x="false">
+            <ul>
+              <li ng-class="{1: 'selected'}[imgJs]" ng-click="changeCheck('Js', 1);">
+                <label>
+                  <input type="radio" name="sendJs"><i class="icon icon-fq-circle-ok" ng-if="imgJs == 1"></i><span class="type-img"><img src="upload/fq-send-image-0.png" alt=""></span><strong class="type-name">每日一善</strong><span class="type-info">(剩余<b>5</b>张)</span>
+                </label>
+              </li>
+              <li ng-class="{2: 'selected'}[imgJs]" ng-click="changeCheck('Js', 2);">
+                <label>
+                  <input type="radio" name="sendJs"><i class="icon icon-fq-circle-ok" ng-if="imgJs == 2"></i><span class="type-img"><img src="upload/fq-send-image-1.png" alt=""></span><strong class="type-name">每日一善</strong><span class="type-info">(剩余<b>5</b>张)</span>
+                </label>
+              </li>
+              <li ng-class="{3: 'selected'}[imgJs]" ng-click="changeCheck('Js', 3);">
+                <label>
+                  <input type="radio" name="sendJs"><i class="icon icon-fq-circle-ok" ng-if="imgJs == 3"></i><span class="type-img"><img src="upload/fq-send-image-2.png" alt=""></span><strong class="type-name">每日一善</strong><span class="type-info">(剩余<b>5</b>张)</span>
+                </label>
+              </li>
+            </ul>
+          </ion-scroll>
+          </div>
+          <div class="items-control">
+            <ul>
+              <li class="active"><a href="javascript:;"></a></li>
+              <li><a href="javascript:;"></a></li>
+              <li><a href="javascript:;"></a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="wgt-fq-send form">
+          <div class="form-group">
+            <label class="form-label">送给</label>
+            <div class="input">
+              <input type="text" placeholder="" class="form-control" ng-model="sendPerson.personName">
+          </div><a href="javascript:;" class="add-name" ng-click="selectDepartment()"><i class="icon icon-add-fq"></i></a>
+          </div>
+          <div class="form-group">
+            <label class="form-label textarea-label">赠言</label>
+            <div class="input">
+              <textarea type="text" placeholder="" class="form-control"> </textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input"><a href="javascript:;" class="add-image"><i class="icon icon-fq-add-image"></i><span>添加图片</span></a></div>
+          </div>
+        </div>
+      </div>
+      <!-- } -->
+      <!-- #footer { -->
+      <!-- } -->
+      <!-- .page-sys-menu { -->
+      <!-- } -->
+      <!-- .page-mask {-->
+      <!-- } -->
+      <!-- .page-dialog {-->
+      <!-- }         -->
+    </div>
+</ion-view>

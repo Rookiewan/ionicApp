@@ -1,0 +1,44 @@
+{
+    "ROUs":[
+        {
+            "ROUId": "A",
+            "ROUName": "产品"
+        },
+        {
+            "ROUId": "B",
+            "ROUName": "设计"
+        },
+        {
+            "ROUId": "C",
+            "ROUName": "研发"
+        },
+        {
+            "ROUId": "D",
+            "ROUName": "用户"
+        },
+        {
+            "ROUId": "E",
+            "ROUName": "测试"
+        },
+        {
+            "ROUId": "F",
+            "ROUName": "体验"
+        },
+        {
+            "ROUId": "G",
+            "ROUName": "不知道"
+        },
+        {
+            "ROUId": "H",
+            "ROUName": "Rookie"
+        },
+        {
+            "ROUId": "I",
+            "ROUName": "前端"
+        },
+        {
+            "ROUId": "J",
+            "ROUName": "恩恩"
+        }
+    ]
+}

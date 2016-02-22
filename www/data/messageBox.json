@@ -1,0 +1,40 @@
+{
+    "messages": [
+        {
+            "id": 2,
+            "icon": "icon-msgbox-notice",
+            "title": "公司公告",
+            "time": "15:10",
+            "summary": "物业通知明天写字楼停电,公司巴拉巴拉巴拉",
+            "isNew": true,
+            "num": 12
+        },
+        {
+            "id": 3,
+            "icon": "icon-msgbox-birthday",
+            "title": "Happy Birthday!!!",
+            "time": "15:10",
+            "summary": "物业通知明天写字楼停电,公司巴拉巴拉巴拉",
+            "isNew": true,
+            "num": 13
+        },
+        {
+            "id": 4,
+            "icon": "icon-msgbox-notice",
+            "title": "公司公告",
+            "time": "15:10",
+            "summary": "物业通知明天写字楼停电,公司巴拉巴拉巴拉",
+            "isNew": true,
+            "num": 11
+        },
+        {
+            "id": 5,
+            "icon": "icon-msgbox-birthday",
+            "title": "生日快乐",
+            "time": "15:10",
+            "summary": "物业通知明天写字楼停电,公司巴拉巴拉巴拉",
+            "isNew": false,
+            "num": 20
+        }
+    ]
+}

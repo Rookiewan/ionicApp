@@ -1,0 +1,71 @@
+<ion-view on-swipe-right="onSwipeRight()">
+    <div id="main" class="page-base page-0">
+        <!-- #header { -->
+        <div class="wgt-header">
+            <div class="nav"><a href="javascript:;" ng-click="goBack()" class="btn btn-nav-return"><i class="icon icon-nav-return"></i></a></div>
+            <h1 class="title">忘记密码</h1>
+            <div class="nav-opt">
+            </div>
+        </div>
+        <!-- } -->
+        <!-- #content {  -->
+        <div class="page-contrain">
+            
+            <form class="form wgt-form-forgot" name="forgetPassword">
+                <div ng-show="showErrorTip" class="error-tip">
+                    {{errorTip}}
+                </div>
+                <div class="form-group">
+                    <label for="" class="form-label">
+                        手机号
+                    </label>
+                    <div class="input">
+                        <input ng-model="mobilePhone" ng-model-options="{updateOn:'blur'}" required ng-minlength="11" ng-maxlength="11" ng-pattern="/^[0-9]{11}$/" name="phone" type="text" placeholder="请输入中国大陆手机号码，只能11位数" class="form-control" ng-focus="ceilPhoneFocus = true;" ng-blur="ceilPhoneFocus = false;">
+                        <del class="icon icon-input-clear" ng-show="mobilePhone.length>0 && ceilPhoneFocus" ng-click="mobilePhone = ''">
+                        </del>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="form-label">
+                        验证码
+                    </label>
+                    <div class="input">
+                        <input type="text" placeholder="" class="form-control">
+                    </div>
+                    <button class="btn btn-1" ng-class="{'disabled': isGetCheckCode}" ng-click="getCheckCode()">
+                        获取验证码
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label for="" class="form-label">
+                        新密码
+                    </label>
+                    <div class="input">
+                        <input ng-model="newPassword" ng-model-options="{debounce:100}" required ng-minlength="6" ng-maxlength="18" name="new" type="{{newPwdType}}" placeholder="请输入新密码" class="form-control">
+                        <i class="icon icon-view" ng-class="{'disabled': !newHidePwd}" ng-click="toggleType()"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="form-label">确认密码</label>
+                    <div class="input">
+                        <input ng-model="confirmPassword" ng-model-options="{debounce:100}" required ng-minlength="6" ng-maxlength="18" name="confirm" type="{{reNewPwdType}}" placeholder="请再次输入新密码" class="form-control">
+                        <i class="icon icon-view" ng-class="{'disabled': !reNewHidePwd}" ng-click="toggleType('re')"></i>
+                    </div>
+                </div>
+                <div class="form-opts">
+                    <button class="btn btn-0" ng-disabled="forgetPassword.$pristine || forgetPassword.$invalid" ng-click="validateForm(forgetPassword.phone.$valid)">保 存 </button>
+                </div>
+            </form>
+
+        </div>
+        <!-- } -->
+        <!-- #footer { -->
+        <!-- } -->
+        <!-- .page-sys-menu { -->
+        <!-- } -->
+        <!-- .page-mask {-->
+        <!-- } -->
+        <!-- .page-dialog {-->
+        <!-- }         -->
+    </div>
+</ion-view>

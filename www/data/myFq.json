@@ -1,0 +1,41 @@
+{
+    "received": [
+        {
+            "id": 1,
+            "imgUrl": "upload/my-fq-sent-0.png",
+            "typeName": "日行一善",
+            "title": "钱很多送你一个福券！",
+            "summary": "感谢你今天热心帮助我解决了工作上棘手的问题，由衷感谢！",
+            "isReceived": true,
+            "sender": "钱多多",
+            "time": "15:10",
+            "link": false,
+            "opt": true
+        },
+        {
+            "id": 2,
+            "imgUrl": "upload/my-fq-sent-0.png",
+            "typeName": "日行一善",
+            "title": "钱很多送你一个福券！",
+            "summary": "",
+            "isReceived": true,
+            "sender": "钱多多",
+            "time": "15:10",
+            "link": true,
+            "linkUrl": "http://www.baidu.com",
+            "linkText": "点击查看祝福",
+            "opt": true
+        }
+    ],
+    "sent": [
+        {
+            "id": 1,
+            "imgUrl": "upload/my-fq-sent-0.png",
+            "typeName": "日行一善",
+            "title": "钱很多送你一个福券！",
+            "summary": "感谢你今天热心帮助我解决了工作上棘手的问题，由衷感谢！",
+            "time": "15:10",
+            "link": false
+        }
+    ]
+}

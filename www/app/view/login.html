@@ -1,0 +1,50 @@
+<ion-view>
+    <div id="main" class="page-base page-0">
+        <!-- #header { -->
+        <!-- } -->
+        <!-- #content {  -->
+        <div class="page-contrain">
+            <form class="form wgt-form-login" name="loginForm" novalidate>
+                <div class="user-head cur-user"><img ng-src="{{userPhoto}}" alt=""></div>
+                <div class="form-group">
+                    <label for="" class="form-label"><i class="icon icon-user">                   </i></label>
+                    <div class="input">
+                        <input ng-model="accountNumber"  required ng-minlength="2" ng-maxlength="18" ng-keydown="resetData($event)" type="text" name="userName" placeholder="邮箱 / 手机号 / 用户名" class="form-control" ng-focus="usernameFocus = true;" ng-blur="usernameFocus = false;"/>
+                        <del class="icon icon-input-clear" ng-show="accountNumber.length>0 && usernameFocus" ng-click="accountNumber=''"></del>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="form-label"><i class="icon icon-password"></i></label>
+                    <div class="input">
+                        <input ng-model="password" ng-model-options="{debounce:100}" required ng-minlength="6" ng-maxlength="14" ng-keydown="resetData($event)" type="password" name="userPassword" placeholder="6-14位，数字或者字母" class="form-control" ng-focus="passwordFocus = true;" ng-blur="passwordFocus = false;"/>
+                        <del class="icon icon-input-clear" ng-show="password.length>0 && passwordFocus" ng-click="password=''"></del>
+                    </div>
+                </div>
+                <div class="form-opts">
+                    <!--ng-disabled="loginForm.$pristine || loginForm.$invalid"-->
+                    <button class="btn btn-0" ng-click="validateUser()">登 录</button>
+                </div>
+                <div class="form-footer"> <a href="#/forgot" class="link-2">忘记密码？</a></div>
+            </form>
+        </div>
+        <!-- } -->
+        <!-- #footer { -->
+        <div class="page-footer">
+            <div class="wgt-login-type">
+                <ul>
+                    <li class="site"><a href="#/reg"><span><i class="icon icon-login-yoya"></i></span><strong>注册新账号</strong></a></li>
+                    <li><span><i class="icon icon-login-qq"></i></span><strong>腾讯QQ</strong></li>
+                    <li><span><i class="icon icon-login-weixin"></i></span><strong>微信登录</strong></li>
+                    <li><span><i class="icon icon-login-weibo"></i></span><strong>新浪微博</strong></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</ion-view>
+<!-- } -->
+<!-- .page-sys-menu { -->
+<!-- } -->
+<!-- .page-mask {-->
+<!-- } -->
+<!-- .page-dialog {-->
+<!-- }         -->
