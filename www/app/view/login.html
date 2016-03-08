@@ -9,8 +9,8 @@
                 <div class="form-group">
                     <label for="" class="form-label"><i class="icon icon-user">                   </i></label>
                     <div class="input">
-                        <input ng-model="accountNumber"  required ng-minlength="2" ng-maxlength="18" ng-keydown="resetData($event)" type="text" name="userName" placeholder="邮箱 / 手机号 / 用户名" class="form-control" ng-focus="usernameFocus = true;" ng-blur="usernameFocus = false;"/>
-                        <del class="icon icon-input-clear" ng-show="accountNumber.length>0 && usernameFocus" ng-click="accountNumber=''"></del>
+                        <input ng-model="username"  required ng-minlength="2" ng-maxlength="18" ng-keydown="resetData($event)" type="text" name="userName" placeholder="邮箱 / 手机号 / 用户名" class="form-control" ng-focus="usernameFocus = true;" ng-blur="usernameFocus = false;"/>
+                        <del class="icon icon-input-clear" ng-show="username.length>0 && usernameFocus" ng-click="username=''"></del>
                     </div>
                 </div>
                 <div class="form-group">

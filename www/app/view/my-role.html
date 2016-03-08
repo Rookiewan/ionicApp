@@ -12,19 +12,9 @@
       <div class="page-contrain">      
         <ion-scroll> 
         <div class="arrow-item-list radio-list">          
-          <div class="arrow-item">
-            <input type="radio" name="role" ng-checked="role == '教练'" ng-click="changeRole('教练');">
-            <div class="item-title">教练</div>
-            <div class="item-text"><i class="icon icon-radio"></i></div>
-          </div>
-          <div class="arrow-item">
-            <input type="radio" name="role" ng-checked="role == '队长'" ng-click="changeRole('队长');">
-            <div class="item-title">队长</div>
-            <div class="item-text"><i class="icon icon-radio"></i></div>
-          </div>
-          <div class="arrow-item">
-            <input type="radio" name="role" ng-checked="role == '管理员'" ng-click="changeRole('管理员');">
-            <div class="item-title">管理员</div>
+          <div class="arrow-item" ng-repeat="role in user.roles track by $index">
+            <input type="radio" name="role" ng-checked="user.roleId == role.id" ng-click="changeRole(role.id, role.name);">
+            <div class="item-title">{{role.name}}</div>
             <div class="item-text"><i class="icon icon-radio"></i></div>
           </div>
         </div>

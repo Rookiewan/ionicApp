@@ -108,7 +108,9 @@
         }
     }
 }
-
+.wgt-fq-reply {
+  padding-bottom: 3.5rem;
+}
 .wgt-login-type {
     .site {
         span {
@@ -117,8 +119,10 @@
         }
     }
 }
-
 .wgt-department-select {
+    overflow: hidden;
+}
+.wgt-department-select-fix {
     -webkit-transform: translateY(-110%);
     -webkit-transition: all 0.3s;
     top: 1.42095rem !important;

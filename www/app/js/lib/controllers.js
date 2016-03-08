@@ -23,19 +23,43 @@ yyController.controller('rootController', ['$scope', '$state', '$window', '$loca
 yyController.controller('YyAboutUsController', ['$scope', '$state', '$http', function($scope, $state, $http) {
     $scope.version = "2.1.0";
 }]);
-yyController.controller('YyAddToCompanyController', ['$scope', '$state', '$http', '$timeout', 'currUserService', function($scope, $state, $http, $timeout, currUserService) {
+yyController.controller('YyAddToCompanyController', ['$scope', '$state', '$timeout', 'User', 'Institutions', 'ToastService', function($scope, $state, $timeout, User, Institutions, ToastService) {
     $scope.isGetCheckCode = false;
+    $scope.addIns = {institutionName: ''};
     $scope.submit = function() {
-        $state.go('tab.checkResult');
-    };
+        Institutions.checkRepeat($scope.addIns.institutionName).then(function() {
+            //假设 一切验证好了
+            //
+            //
+            //
+            
 
+            var postObj = {
+                'insName': $scope.addIns.institutionName
+            };
+            Institutions.addToInstitution(postObj).then(function(data) {
+                if(data.status == yyConfig.codes.errorStatus) {
+                    if(data.info == 'repeat') {
+                        ToastService.showToast('您已加入该机构，请勿重复加入', 'bottom');
+                        return false;
+                    }
+                }else if(data.status == yyConfig.codes.successStatus) {
+                    Institutions.getInstitution().then(function() {
+                        $state.go('tab.checkResult');
+                    });
+                }
+            });
+        }, function() {
+            ToastService.showToast('机构名称错误', 'bottom');
+        });
+    };
     $scope.getCheckCode = function() {
         $scope.isGetCheckCode = !$scope.isGetCheckCode;
         $timeout(function() {
             $scope.isGetCheckCode = false;
         }, 10000);
     };
-    $scope.user = currUserService;
+    $scope.user = User.user;
 }]);
 
 yyController.controller('YyCheckResultController', ['$scope', '$state', '$http', function($scope, $state, $http) {
@@ -43,56 +67,172 @@ yyController.controller('YyCheckResultController', ['$scope', '$state', '$http',
         $state.go('checkResult');
     };
 }]);
-yyController.controller('YyCreateCompanyController', ['$scope', '$state', '$http', function($scope, $state, $http) {
+yyController.controller('YyCreateCompanyController', ['$scope', '$state', 'User', 'Institutions', 'ToastService', function($scope, $state, User, Institutions, ToastService) {
+    $scope.user = {
+        institutionName: '',
+        username: User.user.username,
+        email: User.user.email,
+        ceilPhone: User.user.ceilPhone  
+    };
     $scope.submit = function() {
-        $state.go('tab.checkResult');
+        var postObj = {
+            "name": $scope.user.institutionName,
+            "ROUs": angular.toJson(User.institutions.ROUs),
+            "jobs": angular.toJson(User.institutions.jobs)
+        };
+
+        Institutions.create(postObj).then(function(data) {
+            if(data.status == yyConfig.codes.errorStatus) {
+                if(data.info == 'repeat') {
+                    ToastService.showToast('该名称已经被创建', 'bottom');
+                    return false;
+                }
+            }else if(data.status == yyConfig.codes.successStatus) {
+                $state.go('tab.checkResult');
+            }
+        });
     };
 }]);
-yyController.controller('YyEditUsernameController', ['$scope', '$state', '$http', '$ionicHistory', '$cordovaToast', 'currUserService', 'updService', function($scope, $state, $http, $ionicHistory, $cordovaToast, currUserService, updService) {
+yyController.controller('YyDepartmentSelectController', ['$scope', '$state', '$http', '$ionicHistory', 'User', 'AccountService', 'Institutions', 'ToastService', function($scope, $state, $http, $ionicHistory, User, AccountService, Institutions, ToastService) {
+    $scope.user= {"ROU": User.getRou(User.user.institution.rouId),"rouId": User.user.institution.rouId};
+
+    $scope.departments = angular.fromJson(User.user.institution.ROUs);
+    $scope.select = function(selectId) {
+        //do something
+        var postObj = {
+            "rouId": selectId,
+            "insId": User.user.institution.insId
+        };
+
+        AccountService.update('updRou', postObj).then(function(data) {
+            if(data.status == yyConfig.codes.successStatus) {
+                angular.extend(User.user.institution, {'rouId': selectId});
+                angular.extend(User.user, {'ROU': User.getRou(selectId)});
+                User.save(User).then(function() {
+                        Institutions.getInstitution();
+                        ToastService.showToast('ROU更改成功', 'bottom');
+                        $ionicHistory.goBack();
+                });
+            }
+        });
+
+        $scope.user.ROU = User.getRou(selectId);
+    };
+}]);
+yyController.controller('YyEditEmailController', ['$scope', '$state', '$http', 'ToastService', '$ionicHistory', 'currUserService', 'AccountService', 'User', function($scope, $state, $http, ToastService, $ionicHistory, currUserService, AccountService, User) {
+    $scope.user = {'email': User.user.email};
+    $scope.save = function() {
+        if($scope.user.email) {
+            var postObj = {
+                'email': $scope.user.email
+            };
+            //正则校验
+            
+            AccountService.update('updEmail', postObj).then(function(data) {
+                if(data.status == yyConfig.codes.successStatus) {
+                    angular.extend(User.user, postObj);
+                    User.save(User).then(function() {
+                        ToastService.showToast('邮箱更改成功', 'bottom');
+                        $ionicHistory.goBack();
+                    });
+                }
+            });
+        } else {
+            ToastService.showToast('邮箱不能为空', 'bottom');
+        }
+    };
+}]);
+yyController.controller('YyEditQQController', ['$scope', '$state', '$http', 'ToastService', '$ionicHistory', 'currUserService', 'AccountService', 'User', function($scope, $state, $http, ToastService, $ionicHistory, currUserService, AccountService, User) {
+    $scope.user = {'QQ': User.user.QQ};
+    $scope.save = function() {
+        if($scope.user.QQ) {
+            var postObj = {
+                'QQ': $scope.user.QQ
+            };
+            AccountService.update('updQQ', postObj).then(function(data) {
+                if(data.status == yyConfig.codes.successStatus) {
+                    angular.extend(User.user, postObj);
+                    User.save(User).then(function() {
+                        ToastService.showToast('QQ更改成功', 'bottom');
+                        $ionicHistory.goBack();
+                    });
+                }
+            });
+        } else {
+            ToastService.showToast('QQ不能为空', 'bottom');
+        }
+       
+        
+    };
+}]);
+yyController.controller('YyEditUsernameController', ['$scope', '$state', '$http', '$ionicHistory', 'ToastService', 'currUserService', 'User', 'AccountService', function($scope, $state, $http, $ionicHistory, ToastService, currUserService, User, AccountService) {
     $scope.save = function() {
         if($scope.user.username) {
             var postObj = {
                 'username': $scope.user.username
             };
-            updService.upd('updName', postObj, function(data) {
-
+            AccountService.update('updName', postObj).then(function(data) {
                 if(data.status == yyConfig.codes.errorStatus) {
                     if(data.info == 'repeat') {
-                         console.log('该用户已存在');
-                        $cordovaToast.show('该用户已存在','short','bottom');
+                        ToastService.showToast('该用户已存在', 'bottom');
                         return false;
                     }
                 } else if(data.status == yyConfig.codes.successStatus) {
-                    currUserService.set({'username': $scope.user.username});
-                    console.log('名字更改成功');
-                    $cordovaToast.show('名字更改成功','short','bottom');
-                    $ionicHistory.goBack();
+                    angular.extend(User.user, postObj);
+                    User.save(User).then(function() {
+                        ToastService.showToast('名字更改成功', 'bottom');
+                        $ionicHistory.goBack();
+                    });
                 }
             });
         } else {
-            $cordovaToast.show('名字不能为空','short','bottom');
+            ToastService.showToast('名字不能为空', 'bottom');
         }
     };
-    $scope.user = {'username': currUserService.username};
+    $scope.user = {'username': User.user.username};
 }]);   
-yyController.controller('YyEditUsertelController', ['$scope', '$state', '$http', '$cordovaToast', '$ionicHistory', 'currUserService', 'updService', function($scope, $state, $http, $cordovaToast, $ionicHistory, currUserService, updService) {
-    $scope.user = {'ceilPhone': currUserService.ceilPhone};
+yyController.controller('YyEditUsertelController', ['$scope', '$state', 'ToastService', '$ionicHistory', 'currUserService', 'AccountService', 'User', function($scope, $state, ToastService, $ionicHistory, currUserService, AccountService, User) {
+    $scope.user = {'ceilPhone': User.user.ceilPhone};
     $scope.save = function() {
         if($scope.user.ceilPhone) {
             var postObj = {
                 'ceilPhone': $scope.user.ceilPhone
             };
-            updService.upd('updCeilPhone', postObj, function(data) {
-
+            AccountService.update('updCeilPhone', postObj).then(function(data) {
                 if(data.status == yyConfig.codes.successStatus) {
-                    currUserService.set({'ceilPhone': $scope.user.ceilPhone});
-                    console.log('手机号更改成功');
-                    $cordovaToast.show('手机号更改成功','short','bottom');
-                    $ionicHistory.goBack();
+                    angular.extend(User.user, postObj);
+                    User.save(User).then(function() {
+                        ToastService.showToast('手机号更改成功', 'bottom');
+                        $ionicHistory.goBack();
+                    });
                 }
             });
         } else {
-            $cordovaToast.show('手机号码不能为空','short','bottom');
+            ToastService.showToast('手机号码不能为空', 'bottom');
+        }
+       
+        
+    };
+}]);
+yyController.controller('YyEditWorkPhoneController', ['$scope', '$state', 'ToastService', '$ionicHistory', 'currUserService', 'AccountService', 'User', function($scope, $state, ToastService, $ionicHistory, currUserService, AccountService, User) {
+    $scope.user = {'workPhone': User.user.workPhone};
+
+    $scope.save = function() {
+        if($scope.user.workPhone) {
+            var postObj = {
+                'workPhone': $scope.user.workPhone
+            };
+            AccountService.update('updWorkPhone', postObj).then(function(data) {
+                if(data.status == yyConfig.codes.successStatus) {
+                    angular.extend(User.user, postObj);
+                    User.save(User).then(function() {
+                        ToastService.showToast('办公号码更改成功', 'bottom');
+                        $ionicHistory.goBack();
+                    });
+                }
+            });
+        } else {
+            ToastService.showToast('办公号码不能为空', 'bottom');
         }
        
         
@@ -198,7 +338,7 @@ yyController.controller('YyFqDetailController', ['$scope', '$state', '$statePara
         }).error(function(data) {});
     }
 }]);
-yyController.controller('YyFqIndexController', ['$rootScope', '$scope', '$state', '$http', '$timeout', '$cordovaToast', 'currUserService', 'fqListService', function($rootScope, $scope, $state, $http, $timeout, $cordovaToast, currUserService, fqListService) {
+yyController.controller('YyFqIndexController', ['$rootScope', '$scope', '$state', '$http', '$timeout', 'ToastService', 'currUserService', 'fqListService', function($rootScope, $scope, $state, $http, $timeout, ToastService, currUserService, fqListService) {
 
     $scope.isOpen = false;
 
@@ -329,7 +469,7 @@ yyController.controller('YyFqIndexController', ['$rootScope', '$scope', '$state'
         $timeout(function() {
             getROUList();
             $scope.$broadcast('scroll.refreshComplete');
-            $cordovaToast.show('刷新成功','short','bottom');
+            ToastService.showToast('刷新成功', 'bottom');
         }, 1000);
     };
     $scope.doFqListRefresh = function() {
@@ -337,7 +477,7 @@ yyController.controller('YyFqIndexController', ['$rootScope', '$scope', '$state'
             var _ROUId = fqListService.getObj().ROUSIdSelect;
             refreshFq(_ROUId);
             $scope.$broadcast('scroll.refreshComplete');
-            $cordovaToast.show('刷新成功','short','bottom');
+            ToastService.showToast('刷新成功', 'bottom');
         }, 1000);
     };
     $scope.loadMore = function() {
@@ -396,54 +536,42 @@ yyController.controller('YyInviteTypesController', ['$scope', '$state', '$http',
     };
 }]);
 
-yyController.controller('YyLoginController', ['$scope', '$state', 'currUserService', '$cordovaToast', '$timeout', '$http', '$ionicHistory', function($scope, $state, currUserService, $cordovaToast, $timeout, $http, $ionicHistory) {
-    // $scope.accountNumber = 'Rookie_wan';
+yyController.controller('YyLoginController', ['$scope', '$state', 'currUserService', 'ToastService', '$ionicHistory', 'StorageService', 'User', 'AccountService', function($scope, $state, currUserService, ToastService, $ionicHistory, StorageService, User, AccountService) {
+    // $scope.username = 'Rookie_wan';
     // $scope.password = '123456';
     // $scope.userPhoto = 'upload/user-header.png';
+    var userPhoto;
 
-
-    $timeout(function() {
-        $scope.$watch('accountNumber', function(nValue) {
-            getUserLogin(function(userInfos) {
-                var userPhoto = 'upload/user-header.png';
-                angular.forEach(userInfos, function(user) {
-                    if(user.username == nValue) {
-                        userPhoto = yyConfig.urls.imgUploadUrl + user.headPhotoUrl;
-                        return false;
-                    }
-
-                });
-                $scope.userPhoto = userPhoto;
-            });
+    //获取用户头像
+    $scope.$watch('username', function(nValue) {
+        AccountService.login({username: nValue}).then(function(currUser) {
+            if(currUser) {
+                userPhoto = yyConfig.urls.imgUploadUrl + currUser.headPhotoUrl;
+            }
+            $scope.userPhoto = userPhoto;
+        }, function() {
+            userPhoto = 'upload/user-header.png';
+            $scope.userPhoto = userPhoto;
         });
-    }, 100);
+    });
 
     // 验证用户名密码
     $scope.validateUser = function() {
-        var hasTheUser = false;
-        getUserLogin(function(userInfos) {
-            var currUser;
-            angular.forEach(userInfos, function(user) {
-                if($scope.accountNumber==user.username){
-                    currUser = user;
-                    hasTheUser = true;
-                    return;
-                }
-            });
 
-            if(hasTheUser) {
-                if($scope.password == currUser.password) {
-                    console.log('登录成功');
-                    localStorage.setItem('userId', currUser.id);
-                    currUserService.set(currUser);
-                    $cordovaToast.show('登录成功','short','bottom');
-                    $state.go('tab.user', {'userId': currUser.id});
-                } else if($scope.password != currUser.password){
-                    $cordovaToast.show('密码错误','short','bottom');
-                }
-            } else {
-                $cordovaToast.show('该用户不存在','short','bottom');
+        AccountService.login({username: $scope.username}).then(function(currUser) {
+
+            if($scope.password == currUser.password) {
+                angular.extend(User.user, currUser);
+                User.save(User).then(function() {
+                    ToastService.showToast('登录成功', 'bottom');
+                    $state.go('tab.user');
+                });
+                
+            } else if($scope.password != currUser.password){
+                ToastService.showToast('密码错误', 'bottom');
             }
+        },function() {
+            ToastService.showToast('该用户不存在', 'bottom');
         });
     }
     $scope.reg = function() {
@@ -469,23 +597,20 @@ yyController.controller('YyLoginController', ['$scope', '$state', 'currUserServi
     }
     checkIsLogin();
     function checkIsLogin() {
-        if(!!localStorage.getItem('userId')) {
-            var userId = parseInt(localStorage.getItem('userId'));
-
-            getUserLogin(function(userInfos) {
-                angular.forEach(userInfos, function(user) {
-                    if(userId==user.id){
-                        currUserService.set(user);
-                        $state.go('tab.user', {'userId': user.id});
-                        return;
-                    }
+        StorageService.get('user').then(function(data) {
+            //data.user != undefined
+            //console.log(!!data.user);
+            if(!!data.user) {
+                angular.extend(User.user, data.user);
+                User.save(User).then(function() {
+                    $state.go('tab.user');
                 });
-            });
-        }
+            }
+        });
     }
 }]);
 
-yyController.controller('YyMessageBoxController', ['$scope', '$state', '$stateParams', '$http', '$timeout', '$cordovaToast', function($scope, $state, $stateParams, $http, $timeout, $cordovaToast) {
+yyController.controller('YyMessageBoxController', ['$scope', '$state', '$stateParams', '$http', '$timeout', 'ToastService', function($scope, $state, $stateParams, $http, $timeout, ToastService) {
 
     $scope.isSysMenuOpen = false;
     $scope.$parent.myScrollOptions = {
@@ -519,7 +644,7 @@ yyController.controller('YyMessageBoxController', ['$scope', '$state', '$statePa
     $scope.doRefresh = function() {
         $timeout(function() {
             $scope.$broadcast('scroll.refreshComplete');
-            $cordovaToast.show('刷新成功','short','bottom');
+            ToastService.showToast('刷新成功', 'bottom');
         }, 1000);
     };
     var timeStamp = new Date().valueOf();
@@ -594,13 +719,37 @@ yyController.controller('YyMoreController', ['$scope', '$state', '$http', '$ioni
         });
     };
 }]);
-yyController.controller('YyMyCompanyController', ['$scope', '$state', '$http', function($scope, $state, $http) {
+yyController.controller('YyMyCompanyController', ['$scope', '$state', 'ToastService', 'AccountService', 'Institutions', 'User', function($scope, $state, ToastService, AccountService, Institutions, User) {
 
     $scope.createCompany = function() {
         $state.go('tab.createCompany');
     };
+    $scope.jionOthers = function() {
+        $state.go('tab.addToCompany');
+    };
+    $scope.select = function(insId) {
+        if(insId == User.user.institutionId) {
+            return;
+        }
+        //变更机构信息
+        var postObj = {'institutionId': insId};
+        AccountService.update('updInstitutionId', postObj).then(function(data) {
+            if(data.status == yyConfig.codes.successStatus) {
+                AccountService.changeInstitution(insId).then(function() {
+                    console.log(User.user);
+                    ToastService.showToast('机构切换成功', 'bottom');
+                });
+            }
+        });
+        
+    };
+
+    Institutions.getInstitution().then(function() {
+        $scope.institutions = User.institutions;
+        $scope.user = {"insId": User.user.institution.insId};
+    });
 }]);
-yyController.controller('YyMyFqController', ['$scope', '$state', '$http', '$timeout', '$cordovaToast', function($scope, $state, $http, $timeout, $cordovaToast) {
+yyController.controller('YyMyFqController', ['$scope', '$state', '$http', '$timeout', 'ToastService', function($scope, $state, $http, $timeout, ToastService) {
 
     $scope.reActive = true;
     getData('received', function(data) {
@@ -635,7 +784,7 @@ yyController.controller('YyMyFqController', ['$scope', '$state', '$http', '$time
     $scope.doRefresh = function() {
         $timeout(function() {
             $scope.$broadcast('scroll.refreshComplete');
-            $cordovaToast.show('刷新成功','short','bottom');
+            ToastService.showToast('刷新成功', 'bottom');
         }, 1000);
     };
     function getData(opts, callback) {
@@ -656,7 +805,7 @@ yyController.controller('YyMyFqController', ['$scope', '$state', '$http', '$time
         }).error(function(data) {});
     }
 }]);
-yyController.controller('YyMyPasswordController', ['$scope', '$state', '$http', '$ionicHistory', 'currUserService', 'updService', '$cordovaToast', function($scope, $state, $http, $ionicHistory, currUserService, updService, $cordovaToast) {
+yyController.controller('YyMyPasswordController', ['$scope', '$state', '$ionicHistory', 'currUserService', 'ToastService', 'AccountService', 'User', function($scope, $state, $ionicHistory, currUserService, ToastService, AccountService, User) {
 
     $scope.pwd = {
         'oldPassword': '',
@@ -664,23 +813,24 @@ yyController.controller('YyMyPasswordController', ['$scope', '$state', '$http', 
         'reNewPassword': ''
     };
     $scope.save = function() {
-        if(currUserService.password != $scope.pwd.oldPassword) {
-            $cordovaToast.show('密码错误','short','bottom');
+        if(User.user.password != $scope.pwd.oldPassword) {
+            ToastService.showToast('密码错误', 'bottom');
             return false;
         } else if($scope.pwd.newPassword != $scope.pwd.reNewPassword || $scope.pwd.newPassword == '') {
-            $cordovaToast.show('两次输入密码不一致','short','bottom');
+            ToastService.showToast('两次输入密码不一致', 'bottom');
             return false;
         } else {
             var pwdObj = {
                 'oldPwd': $scope.pwd.oldPassword,
                 'newPwd': $scope.pwd.newPassword
             };
-            updService.upd('updPwd', pwdObj, function(data) {
+            AccountService.update('updPwd', pwdObj).then(function(data) {
                 if(data.status == yyConfig.codes.successStatus) {
-                   currUserService.set({'password': $scope.pwd.newPassword});
-                   console.log('修改成功');
-                   $cordovaToast.show('修改成功','short','bottom');
-                   $ionicHistory.goBack();
+                    angular.extend(User.user, {'password': $scope.pwd.newPassword});
+                    User.save(User).then(function() {
+                        ToastService.showToast('修改成功', 'bottom');
+                        $ionicHistory.goBack();
+                    });
                 }
                 return false;
             });
@@ -689,57 +839,49 @@ yyController.controller('YyMyPasswordController', ['$scope', '$state', '$http', 
         // success
     };
 }]);
-yyController.controller('YyMyRoleController', ['$scope', '$state', '$http', '$cordovaToast', '$ionicHistory', 'currUserService', 'updService', function($scope, $state, $http, $cordovaToast, $ionicHistory, currUserService, updService) {
-    $scope.role = currUserService.role;
-    $scope.changeRole = function(role) {
-        var _role;
-        switch(role) {
-            case '队长':
-                _role = 0;
-                break;
-            case '教练':
-                _role = 1;
-                break;
-            case '管理员':
-                _role = 2;
-                break;
-            default:
-                _role = 3;
-        }
-        var postObj = {
-            'role': _role
-        };
-        updService.upd('updRole', postObj, function(data) {
+yyController.controller('YyMyRoleController', ['$scope', '$state', 'ToastService', '$ionicHistory', 'currUserService', 'AccountService', 'User', 'Institutions', function($scope, $state, ToastService, $ionicHistory, currUserService, AccountService, User, Institutions) {
 
+    $scope.user = {roles: angular.fromJson(User.user.institution.roles), roleId: User.user.institution.roleId};
+    $scope.changeRole = function(roleId, roleName) {
+        var postObj = {
+            'roleId': roleId,
+            'insId': parseInt(User.user.institutionId)
+        };
+        AccountService.update('updRole', postObj).then(function(data) {
             if(data.status == yyConfig.codes.successStatus) {
-                currUserService.set({'role': role});
-                console.log('角色更改成功');
-                $cordovaToast.show('角色更改成功','short','bottom');
-                $ionicHistory.goBack();
+                angular.extend(User.user.institution, {'roleId': roleId});
+                angular.extend(User.user, {'role': roleName});
+                User.save(User).then(function() {
+                        Institutions.getInstitution();
+                        ToastService.showToast('角色更改成功', 'bottom');
+                        $ionicHistory.goBack();
+                });
             }
         });
-
-        
     };
 }]);
-yyController.controller('YyMySexController', ['$scope', '$state', '$http', '$cordovaToast', '$ionicHistory', 'currUserService', 'updService', function($scope, $state, $http, $cordovaToast, $ionicHistory, currUserService, updService) {
-    $scope.sex = currUserService.sex;
+yyController.controller('YyMySexController', ['$scope', '$state', 'ToastService', '$ionicHistory', 'currUserService', 'AccountService', 'User', function($scope, $state, ToastService, $ionicHistory, currUserService, AccountService, User) {
+    $scope.sex = User.user.sex;
     $scope.changeSex = function(sex) {
         var postObj = {
             'sex': sex == '女' ? 1 : 0
         };
+        AccountService.update('updSex', postObj).then(function(data) {
+            if(data.status == yyConfig.codes.successStatus) {
+                angular.extend(User.user, {'sex': sex});
+                User.save(User).then(function() {
+                    ToastService.showToast('性别更改成功', 'bottom');
+                    $ionicHistory.goBack();
+                });
+            }
+        });
         updService.upd('updSex', postObj, function(data) {
 
-            if(data.status == yyConfig.codes.successStatus) {
-                currUserService.set({'sex': sex});
-                console.log('性别更改成功');
-                $cordovaToast.show('性别更改成功','short','bottom');
-                $ionicHistory.goBack();
-            }
+            
         });
     };
 }]);
-yyController.controller('YyNewsIndexController', ['$scope', '$state', '$http', '$timeout', '$cordovaToast', function($scope, $state, $http, $timeout, $cordovaToast) {
+yyController.controller('YyNewsIndexController', ['$scope', '$state', '$http', '$timeout', 'ToastService', function($scope, $state, $http, $timeout, ToastService) {
     $scope.bannerImage = 'upload/news-index-banner-0.png';
     $scope.bannerTitle = '放飞心中的梦想——丰收老师分享';
 
@@ -767,7 +909,7 @@ yyController.controller('YyNewsIndexController', ['$scope', '$state', '$http', '
         $timeout(function() {
             refreshNews();
             $scope.$broadcast('scroll.refreshComplete');
-            $cordovaToast.show('刷新成功','short','bottom');
+            ToastService.showToast('刷新成功', 'bottom');
         }, 1000);
     };
     $scope.loadMore = function() {
@@ -829,7 +971,7 @@ yyController.controller('YyNewsIndexController', ['$scope', '$state', '$http', '
 
     });*/
 }]);
-yyController.controller('YyRegController', ['$scope', '$state', '$timeout', '$http', '$interval', function($scope, $state, $timeout, $http, $interval) {
+yyController.controller('YyRegController', ['$scope', '$state', '$timeout', '$http', '$interval', 'ToastService', function($scope, $state, $timeout, $http, $interval, ToastService) {
     $scope.pwdType = 'password';
     $scope.checkCodeText = '获取验证码';
     var counter,
@@ -938,7 +1080,7 @@ yyController.controller('YyRegController', ['$scope', '$state', '$timeout', '$ht
         }).success(function(data) {
             if(data.status == yyConfig.codes.errorStatus) {
                 if(data.info == 'repeat') {
-                    $cordovaToast.show('该用户已存在','short','bottom');
+                    ToastService.showToast('该用户已存在', 'bottom');
                     return false;
                 }
             } else if(data.status == yyConfig.codes.successStatus) {
@@ -947,7 +1089,7 @@ yyController.controller('YyRegController', ['$scope', '$state', '$timeout', '$ht
                     //more codes
                     $state.go('login');
                 }, 1000);
-                $cordovaToast.show('注册成功','short','bottom');
+                ToastService.showToast('注册成功', 'bottom');
             }
         });
 
@@ -1011,8 +1153,8 @@ yyController.controller('YyFqSendPresonController', ['$ionicHistory', '$scope', 
     };
 }]);
 
-yyController.controller('YyUserController', ['$scope', '$state', '$stateParams', '$ionicGesture', 'getCurrUserService', 'currUserService',function($scope, $state, $stateParams, $ionicGesture, getCurrUserService, currUserService) {
-    var userId = '';
+yyController.controller('YyUserController', ['$scope', '$state', '$stateParams', '$ionicGesture', 'getCurrUserService', 'currUserService', 'User', 'ProfileService', 'Institutions', function($scope, $state, $stateParams, $ionicGesture, getCurrUserService, currUserService, User, ProfileService, Institutions) {
+    var userId;
     if($stateParams.userId) {
         userId = $stateParams.userId;
     }
@@ -1024,11 +1166,14 @@ yyController.controller('YyUserController', ['$scope', '$state', '$stateParams',
     $scope.$on('$ionicView.loaded', function(scope, states) {
         //临时
         //currUserService.set({'id': '0'});
-        
-        getCurrUserService.getInfo(function(user) {
-            console.log(user);
-            currUserService.set(user);
-            $scope.user = currUserService;
+        ProfileService.get().then(function(data) {
+                $scope.user = User.user;
+                if(User.user.institutionId != null) {
+                    Institutions.getInstitution(User.user.institutionId).then(function() {
+                        $scope.user.institutionName = User.user.institution.name;
+                        console.log(User);
+                    });
+                }
         });
     });
     $scope.$on('$ionicView.beforeLeave', function(scope, states) {
@@ -1122,7 +1267,7 @@ yyController.controller('YyUserController', ['$scope', '$state', '$stateParams',
     // }, ele);
 }]);
 
-yyController.controller('YyUserInfoController', ['$scope', '$state', '$http', 'currUserService', function($scope, $state, $http, currUserService) {
+yyController.controller('YyUserInfoController', ['$scope', '$state', 'currUserService', 'ToastService', 'User', 'AccountService', function($scope, $state, currUserService, ToastService, User, AccountService) {
 
     $scope.$parent.myScrollOptions = {
         'wrapper': {
@@ -1144,9 +1289,11 @@ yyController.controller('YyUserInfoController', ['$scope', '$state', '$http', 'c
     ];
     $scope.sysMenuOpts = sysMenuOpts;
 
-
-    console.log(currUserService);
-    $scope.user = currUserService;
+    $scope.user = User.user;
+    console.log(User.user);
+    $scope.user.role = User.getRole(User.user.institution.roleId);
+    $scope.user.ROU = User.getRou(User.user.institution.rouId);
+    console.log(User.user);
     $scope.selectPhoto = function() {
         $scope.isSysMenuOpen = true;
     };
@@ -1159,11 +1306,54 @@ yyController.controller('YyUserInfoController', ['$scope', '$state', '$http', 'c
     $scope.editUsertel = function() {
         $state.go('tab.editUsertel');
     };
+    $scope.editEmail = function() {
+        $state.go('tab.editEmail')
+    };
     $scope.myRole = function() {
         $state.go('tab.myRole');
     };
+    $scope.editQQ = function() {
+        $state.go('tab.editQQ');
+    };
+    $scope.editWorkPhone = function() {
+        $state.go('tab.editWorkPhone');
+    };
+    $scope.departmentSelect = function() {
+        $state.go('tab.departmentSelect');
+    };
+    $scope.selectDate = function() {
+        var options = {
+            date: new Date(),
+            mode: 'date'
+        };
+         
+        function onSuccess(date) {
+            var month = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1));
+            var day = date.getDate() > 9 ? date.getDate() : ('0' + date.getDate());
+            var birthday = date.getFullYear() + '-' + month  + '-' + day;
+
+            var postObj = {
+                birthday: birthday
+            };
+            AccountService.update('updBirthday', postObj).then(function(data) {
+                if(data.status == yyConfig.codes.successStatus) {
+                    angular.extend(User.user, postObj);
+                    User.save(User).then(function() {
+                        ToastService.showToast('生日修改成功', 'bottom');
+                    });
+                }
+            });
+        }
+         
+        function onError(error) { // Android only 
+            alert('Error: ' + error);
+        }
+         
+        datePicker.show(options, onSuccess, onError);
+    };
+
 }]);
-yyController.controller('YyWgtPopupController', ['$scope', '$state', '$http', '$timeout', function($scope, $state, $http, $timeout) {
+yyController.controller('YyWgtPopupController', ['$scope', '$state', '$http', '$timeout', 'User', 'AccountService', function($scope, $state, $http, $timeout, User, AccountService) {
     $scope.cancle = function() {
         $scope.$parent.isPopOpen = false;
         $scope.$parent.comPop = false;
@@ -1173,12 +1363,10 @@ yyController.controller('YyWgtPopupController', ['$scope', '$state', '$http', '$
         console.log(optName);
         switch(optName) {
             case 'loginOut':
-                console.log('out');
-                localStorage.setItem('userId', '');
+                AccountService.logout();
                 $timeout(function() {
                    $state.go('login'); 
                 }, 100);
-                
                 //ionic.Platform.exitApp();
                 break;
             default:

@@ -266,6 +266,46 @@ yyRoutes.config(['$stateProvider', '$urlRouterProvider', '$ionicConfigProvider',
                     controller: 'YyMyRoleController'
                 }
             }
+        })
+        .state('tab.editEmail', {
+            url: '/editEmail',
+            cache: false,
+            views: {
+                'tab-user': {
+                    templateUrl: 'app/view/edit-email.html',
+                    controller: 'YyEditEmailController'
+                }
+            }
+        })
+        .state('tab.editQQ', {
+            url: '/editQQ',
+            cache: false,
+            views: {
+                'tab-user': {
+                    templateUrl: 'app/view/edit-QQ.html',
+                    controller: 'YyEditQQController'
+                }
+            }
+        })
+        .state('tab.editWorkPhone', {
+            url: '/editWorkPhone',
+            cache: false,
+            views: {
+                'tab-user': {
+                    templateUrl: 'app/view/edit-work-phone.html',
+                    controller: 'YyEditWorkPhoneController'
+                }
+            }
+        })
+        .state('tab.departmentSelect', {
+            url: '/departmentSelect',
+            cache: false,
+            views: {
+                'tab-user': {
+                    templateUrl: 'app/view/department-select.html',
+                    controller: 'YyDepartmentSelectController'
+                }
+            }
         });
        $urlRouterProvider.otherwise('/login');
 }]);

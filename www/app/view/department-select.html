@@ -1,0 +1,78 @@
+<ion-view hide-tabs on-swipe-right="onSwipeRight()">
+    <div id="main" class="page-base page-1">
+        <!-- #header { -->
+        <div class="wgt-header">
+            <div class="nav"><a href="javascript:;" class="btn-text" ng-click="goBack()">取消</a></div>
+            <h1 class="title">部门</h1>
+            <div class="nav-opt">
+            </div>
+        </div>
+        <!-- } -->
+        <!-- #content {  -->
+        <div class="page-contrain">
+            <div class="arrow-item-list">
+                <div class="arrow-item">
+                    <div class="item-title">当前部门：{{user.ROU}} </div>
+                </div>
+            </div>
+            <ion-scroll has-bouncing="true" class="arrow-item-list radio-list wgt-department-select">
+                <div class="arrow-item-list radio-list wgt-department-select" >
+                    <div class="arrow-item" ng-repeat="department in departments track by $index" ng-click="select(department.id)">
+                        <input type="radio" name="department" ng-checked="user.rouId == department.id">
+                        <div class="item-title">{{department.name}}</div>
+                        <div class="item-text"><i class="icon icon-radio">            </i></div>
+                    </div>
+                    <!-- <div class="arrow-item">
+            <input type="radio">
+            <div class="item-title">设计ROU</div>
+            <div class="item-text"><i class="icon icon-radio"></i></div>
+                    </div>
+                    <div class="arrow-item">
+                      <input type="radio">
+                      <div class="item-title">研发ROU</div>
+                      <div class="item-text"><i class="icon icon-radio"></i></div>
+                    </div>
+                    <div class="arrow-item">
+                      <input type="radio">
+                      <div class="item-title">研发ROU</div>
+                      <div class="item-text"><i class="icon icon-radio"></i></div>
+                    </div>
+                    <div class="arrow-item">
+                      <input type="radio">
+                      <div class="item-title">研发ROU</div>
+                      <div class="item-text"><i class="icon icon-radio"></i></div>
+                    </div>
+                    <div class="arrow-item">
+                      <input type="radio">
+                      <div class="item-title">研发ROU</div>
+                      <div class="item-text"><i class="icon icon-radio"></i></div>
+                    </div>
+                    <div class="arrow-item">
+                      <input type="radio">
+                      <div class="item-title">研发ROU</div>
+                      <div class="item-text"><i class="icon icon-radio"></i></div>
+                    </div>
+                    <div class="arrow-item">
+                      <input type="radio">
+                      <div class="item-title">研发ROU</div>
+                      <div class="item-text"><i class="icon icon-radio"></i></div>
+                    </div>
+                    <div class="arrow-item">
+                      <input type="radio">
+                      <div class="item-title">研发ROU</div>
+                      <div class="item-text"><i class="icon icon-radio"></i></div>
+                    </div> -->
+                </div>
+            </ion-scroll>
+        </div>
+        <!-- } -->
+        <!-- #footer { -->
+        <!-- } -->
+        <!-- .page-sys-menu { -->
+        <!-- } -->
+        <!-- .page-mask {-->
+        <!-- } -->
+        <!-- .page-dialog {-->
+        <!-- }         -->
+    </div>
+</ion-view>

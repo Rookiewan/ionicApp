@@ -51,3 +51,11 @@ yyApp
             }
         });
     })
+
+document.addEventListener("deviceready", onDeviceReady, false);
+
+function onDeviceReady() {
+
+    var so = cordova.plugins.screenorientation;
+    so.setOrientation(so.Orientation.LANDSCAPE);
+}

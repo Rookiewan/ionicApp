@@ -74,15 +74,22 @@
   min-width: 5.3336rem;
 }
 
+.wgt-fq-reply {
+  padding-bottom: 3.5rem;
+}
+
 .wgt-login-type .site span {
   border-right: 1px solid rgba(37, 108, 158, 0.3);
   box-shadow: -1px 0 rgba(119, 195, 248, 0.5) inset;
 }
-
 .wgt-department-select {
+    overflow: hidden;
+}
+.wgt-department-select-fix {
   -webkit-transform: translateY(-110%);
   -webkit-transition: all 0.3s;
   top: 1.42095rem !important;
+  overflow: hidden;
 }
 
 .wgt-message-detail {

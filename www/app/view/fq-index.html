@@ -22,7 +22,7 @@
                     <div class="title">福券动态</div>
                     <div class="select-filter" ng-click="selectFilter()"><span>产品部</span><i class="icon icon-filter-arrow" ng-class="{true: 'open', false: 'close'}[isOpen]">           </i></div>
                 </div>
-                <ion-scroll has-bouncing="true" class="arrow-item-list radio-list wgt-department-select" ng-style="selectListOpen">
+                <ion-scroll has-bouncing="true" class="arrow-item-list radio-list wgt-department-select wgt-department-select-fix" ng-style="selectListOpen">
                     <ion-refresher pulling-text="下拉刷新" on-refresh="doDpListRefresh()"></ion-refresher>
                     <div class="arrow-item" ng-repeat="ROU in ROUList track by $index">
                         <input type="radio" name="ROU" value="{{ROU.id}}" ng-click="choseROU(ROU.id)" ng-checked="ROU.id == ROUIdSelect">
