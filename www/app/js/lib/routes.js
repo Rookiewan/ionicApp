@@ -47,12 +47,12 @@ yyRoutes.config(['$stateProvider', '$urlRouterProvider', '$ionicConfigProvider',
                 }
             }
         })
-        .state('tab.messageDetail', {
-            url: '/messageDetail/:articleId',
+        .state('tab.newsDetail', {
+            url: '/newsDetail/:articleId',
             views: {
                 'tab-news': {
-                    templateUrl: 'app/view/message-detail.html',
-                    controller: 'YyMessageDetailController'
+                    templateUrl: 'app/view/news-detail.html',
+                    controller: 'YyNewsDetailController'
                 }
             }
         })

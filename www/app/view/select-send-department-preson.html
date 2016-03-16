@@ -15,9 +15,9 @@
         <div class="page-contrain">
             <ion-scroll>
                 <div class="arrow-item-list radio-list">
-                    <div class="arrow-item" ng-repeat="person in peopleList track by $index" ng-click="selectPerson(person.personId, person.personName)">
-                        <input type="radio" name="fqSelectPerson" ng-checked="person.personName == checkPerson">
-                        <div class="item-title">{{person.personName}}</div>
+                    <div class="arrow-item" ng-repeat="person in peopleList track by $index" ng-click="selectPerson(person.id, person.username)">
+                        <input type="radio" name="fqSelectPerson" ng-checked="person.id == checkPersonId">
+                        <div class="item-title">{{person.username}}</div>
                         <div class="item-text">
                             <i class="icon icon-radio"></i>
                         </div>

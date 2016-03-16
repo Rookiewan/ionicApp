@@ -36,7 +36,8 @@
                         <div class="input">
                             <input type="text" placeholder="" class="form-control">
                         </div>
-                        <button class="btn btn-1" ng-class="{'disabled': isGetCheckCode}" ng-click="getCheckCode()">{{checkCodeText}}</button>
+                        <btn-check opt="reg"></btn-check>
+                        <!-- <button class="btn btn-1" ng-class="{'disabled': isGetCheckCode}" ng-click="getCheckCode()">{{checkCodeText}}</button> -->
                     </div>
                     <div class="form-opts">
                         <button class="btn btn-0" ng-click="reg()" ng-disabled="regForm.$pristine || regForm.$invalid">完 成</button>

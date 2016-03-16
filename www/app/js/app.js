@@ -5,7 +5,7 @@ var hosts = [
     'http://localhost/',
     'http://192.168.22.151/'
 ];
-var host = hosts[0];
+var host = hosts[1];
 
 var yyConfig = {
     urls: {
@@ -21,7 +21,6 @@ var yyConfig = {
     }
 
 };
-
 yyApp
     .run(function($rootScope, $ionicPlatform, $location, $ionicHistory, $cordovaToast) {
         $ionicPlatform.registerBackButtonAction(function(e) {
@@ -50,7 +49,8 @@ yyApp
                 StatusBar.styleDefault();
             }
         });
-    })
+        
+    });
 
 document.addEventListener("deviceready", onDeviceReady, false);
 

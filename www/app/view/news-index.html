@@ -24,20 +24,20 @@
                 <div class="item-list">
                     <div class="item" ng-repeat="listItem in lists track by $index">
                         <div class="item-img">
-                            <a href="javascript:;" ng-click="detail(listItem.id)"><img ng-src="{{listItem.imgUrl}}"></a>
+                            <a href="javascript:;" ng-click="detail(listItem.id)"><img ng-src="{{listItem.img}}"></a>
                         </div>
                         <div class="item-body">
                             <div class="item-header">
                                 <h5 class="item-title" ng-click="detail(listItem.id)">{{listItem.title}}</h5><span class="item-status" ng-if="listItem.isExtension == 1"> 推广</span>
                             </div>
                             <div class="item-con">
-                                <div class="item-summary">{{listItem.summary}}</div>
+                                <div class="item-summary">{{listItem.subtitle}}</div>
                                 <div class="item-time">{{listItem.time}}</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <ion-infinite-scroll on-infinite="loadMore()" distance="-10%"></ion-infinite-scroll>
+                <ion-infinite-scroll on-infinite="loadMore()" distance="-10%" ng-if="moreDataLoad"></ion-infinite-scroll>
             </ion-scroll>
         </div>
         <!-- } -->

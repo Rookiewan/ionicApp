@@ -20,10 +20,10 @@
             <div class="wgt-fq-news">
                 <div class="header">
                     <div class="title">福券动态</div>
-                    <div class="select-filter" ng-click="selectFilter()"><span>产品部</span><i class="icon icon-filter-arrow" ng-class="{true: 'open', false: 'close'}[isOpen]">           </i></div>
+                    <div class="select-filter" ng-click="selectFilter()"><span>{{ROUName}}</span><i class="icon icon-filter-arrow" ng-class="{true: 'open', false: 'close'}[isOpen]">           </i></div>
                 </div>
                 <ion-scroll has-bouncing="true" class="arrow-item-list radio-list wgt-department-select wgt-department-select-fix" ng-style="selectListOpen">
-                    <ion-refresher pulling-text="下拉刷新" on-refresh="doDpListRefresh()"></ion-refresher>
+                    <ion-refresher pulling-text="下拉刷新" on-refresh="doROUListRefresh()"></ion-refresher>
                     <div class="arrow-item" ng-repeat="ROU in ROUList track by $index">
                         <input type="radio" name="ROU" value="{{ROU.id}}" ng-click="choseROU(ROU.id)" ng-checked="ROU.id == ROUIdSelect">
                         <div class="item-title">{{ROU.name}}</div>
@@ -35,18 +35,18 @@
                 </div>
                 <ion-scroll has-bouncing="true" class="wgt-fq-list">
                     <ion-refresher pulling-text="下拉刷新" on-refresh="doFqListRefresh()"></ion-refresher>
-                    <div class="item-list">
+                    <div class="item-list" ng-if="fqList.length > 0">
                         <!-- <div class="inner"> -->
-                        <div class="item" ng-if="!isListEmpty" ng-repeat="listItem in list track by $index">
+                        <div class="item" ng-if="!isListEmpty" ng-repeat="listItem in fqList track by $index">
                             <div class="item-type">
-                                <div class="item-img" ng-click="fqDetail(1);"><img ng-src="{{listItem.imgUrl}}"></div><span class="item-type-name">{{listItem.typeName}}</span>
+                                <div class="item-img" ng-click="fqDetail(listItem.id);"><img ng-src="{{listItem.img}}"></div><span class="item-type-name">{{listItem.type}}</span>
                             </div>
                             <div class="item-body">
                                 <div class="item-header">
-                                    <h5 class="item-title" ng-click="fqDetail(1);">{{listItem.title}}</h5>
+                                    <h5 class="item-title" ng-click="fqDetail(listItem.id);">{{listItem.title}}</h5>
                                 </div>
                                 <div class="item-con">
-                                    <div class="item-summary">{{listItem.summary}}</div>
+                                    <div class="item-summary">{{listItem.subtitle}}</div>
                                 </div>
                                 <div class="item-footer"><span class="item-sender">
                     <label>赠送人：</label><span>{{listItem.sender}}</span></span><span class="item-time">{{listItem.time}}</span>
@@ -54,8 +54,8 @@
                             </div>
                         </div>
                     </div>
-                    <ion-infinite-scroll on-infinite="loadMore()" distance="-10%"></ion-infinite-scroll>
-                    <div class="item-empty" ng-if="isListEmpty"><i class="icon icon-item-empty"></i>
+                    <ion-infinite-scroll on-infinite="loadMore()" distance="-10%" ng-if="moreDataLoad"></ion-infinite-scroll>
+                    <div class="item-empty" ng-if="fqList.length == 0"><i class="icon icon-item-empty"></i>
                         <div class="message">还没有福券动态哟，赶快派发第一张福券上头条吧~</div>
                     </div>
                 </ion-scroll>

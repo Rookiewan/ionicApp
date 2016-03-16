@@ -13,27 +13,27 @@
         <ion-scroll>
         <div class="wgt-fq-detail">
           <div class="item-receiver">
-            <label>送给:</label><span>{{fqDetail.sentTo}}</span>
+            <label>送给:</label><span>{{fqDetail.receiver}}</span>
           </div>
           <div class="item">
             <div class="item-img">
-              <div class="user-head"><img ng-src="{{fqDetail.photoUrl}}"></div>
+              <div class="user-head"><img ng-src="{{fqDetail.senderImg}}"></div>
             </div>
             <div class="item-inner">
               <div class="item-body">
-                <div class="item-sender"><strong>{{fqDetail.sentFrom}}</strong>(<span>{{fqDetail.position}}</span>)</div><span class="item-time">{{fqDetail.sentTime}}</span>
+                <div class="item-sender"><strong>{{fqDetail.sender}}</strong>(<span>{{fqDetail.RouName}}</span>)</div><span class="item-time">{{fqDetail.time}}</span>
               </div>
               <div class="item-con">
-                <div class="item-type"><img ng-src="{{fqDetail.imgUrl}}"></div>
+                <div class="item-type"><img ng-src="{{fqDetail.img}}"></div>
                 <p>{{fqDetail.content}}</p>
               </div>
             </div>
           </div>
         </div>
         <div class="wgt-fq-reply">
-          <div class="item" ng-repeat="reply in fqDetail.reply track by $index">
-            <span class="item-user">{{reply.name}}:</span>
-            <span class="item-con">{{reply.content}}</span>
+          <div class="item" ng-repeat="reply in fqDetail.replys track by $index">
+            <span class="item-user">{{reply.replyName}}:</span>
+            <span class="item-con">{{reply.replyContent}}</span>
           </div>
           <div class="form-group">
             <div class="input">

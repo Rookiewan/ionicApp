@@ -15,14 +15,11 @@
                 <li ng-class="{'active': seActive}" ng-click="sent()"><a href="javascript:;">送出的</a></li>
             </ul>
             <ion-scroll has-bouncing="true" class="wgt-fq-list">
-                <ion-refresher
-                    pulling-text="下拉刷新"
-                    on-refresh="doRefresh()"
-                ></ion-refresher>
-                <div class="item-list">
+                <ion-refresher pulling-text="下拉刷新" on-refresh="doRefresh()"></ion-refresher>
+                <div class="item-list" ng-if="list.length > 0">
                     <div class="item" ng-repeat="listItem in list track by $index">
                         <div class="item-type">
-                            <div class="item-img"><img ng-src="{{listItem.imgUrl}}"></div><span class="item-type-name">{{listItem.typeName}}</span>
+                            <div class="item-img"><img ng-src="{{listItem.img}}"></div><span class="item-type-name">{{listItem.type}}</span>
                         </div>
                         <div class="item-body">
                             <div class="item-inner">
@@ -30,14 +27,15 @@
                                     <h5 class="item-title" ng-click="detail(listItem.id)">{{listItem.title}}</h5><a href="javascript:;" ng-if="listItem.opt" class="item-opt" ng-click="sendBack()">回赠</a>
                                 </div>
                                 <div class="item-con">
-                                    <div class="item-summary">{{listItem.summary}}<a ng-if="listItem.link" ng-href="{{listItem.linkUrl}}">{{listItem.linkText}}</a></div>
+                                    <div class="item-summary">{{listItem.subtitle}}<a ng-if="listItem.link" ng-href="{{listItem.linkUrl}}">{{listItem.linkText}}</a></div>
                                 </div>
                             </div>
                             <div class="item-footer"><span class="item-sender">
-                    <label ng-show="listItem.isReceived">赠送人：</label><span ng-show="listItem.isReceived">{{listItem.sender}}</span></span><span class="item-time">{{listItem.time}}</span></div>
+                    <label ng-show="isReceive">赠送人：</label><span ng-show="isReceive">{{listItem.sender}}</span></span><span class="item-time">{{listItem.time}}</span></div>
                         </div>
                     </div>
                 </div>
+                <ion-infinite-scroll on-infinite="loadMore()" distance="-10%" ng-if="moreDataLoad"></ion-infinite-scroll>
             </ion-scroll>
         </div>
         <!-- } -->

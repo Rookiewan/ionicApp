@@ -53,12 +53,12 @@ yyController.controller('YyAddToCompanyController', ['$scope', '$state', '$timeo
             ToastService.showToast('机构名称错误', 'bottom');
         });
     };
-    $scope.getCheckCode = function() {
-        $scope.isGetCheckCode = !$scope.isGetCheckCode;
-        $timeout(function() {
-            $scope.isGetCheckCode = false;
-        }, 10000);
-    };
+    // $scope.getCheckCode = function() {
+    //     $scope.isGetCheckCode = !$scope.isGetCheckCode;
+    //     $timeout(function() {
+    //         $scope.isGetCheckCode = false;
+    //     }, 10000);
+    // };
     $scope.user = User.user;
 }]);
 
@@ -75,10 +75,12 @@ yyController.controller('YyCreateCompanyController', ['$scope', '$state', 'User'
         ceilPhone: User.user.ceilPhone  
     };
     $scope.submit = function() {
+
         var postObj = {
             "name": $scope.user.institutionName,
             "ROUs": angular.toJson(User.institutions.ROUs),
-            "jobs": angular.toJson(User.institutions.jobs)
+            "roles": angular.toJson(User.institutions.roles),
+            "msgType": angular.toJson(User.institutions.msgType)
         };
 
         Institutions.create(postObj).then(function(data) {
@@ -299,48 +301,23 @@ yyController.controller('YyForgotController', ['$scope', '$state', '$timeout', f
         })
     }
 }]);
-yyController.controller('YyFqDetailController', ['$scope', '$state', '$stateParams', '$http', function($scope, $state, $stateParams, $http) {
-
-    if($stateParams.type && $stateParams.id) {
-        var type = $stateParams.type;
-        var id = $stateParams.id;
-
-        getData(type, function(data) {
-            var isGet = false;
-            angular.forEach(data, function(obj) {
-                if(obj.id == id) {
-                    $scope.fqDetail = obj;
-                    isGet = true;
-                    return;
-                }
-            });
-            if(!isGet) {
-                console.log('error');
-            }
-        });
-    }
-    
-    function getData(opts, callback) {
-        var timeStamp = new Date().valueOf();
-        $http.get('data/fqDetail.json?timeStamp=' + timeStamp).success(function(data) {
-            var returnStr = '';
-            switch(opts) {
-                case 'received':
-                    returnStr = data.received;
-                    break;
-                case 'sent':
-                    returnStr = data.sent;
-                    break;
-                default:
-                    returnStr = data.received;;
-            }
-            callback(returnStr);
-        }).error(function(data) {});
-    }
+yyController.controller('YyFqDetailController', ['$scope', '$stateParams', 'Fq', function($scope, $stateParams, Fq) {
+    var id = $stateParams.id;
+    Fq.getFqDetail(id).then(function(oneFq) {
+        $scope.fqDetail = oneFq;
+        
+    });
 }]);
-yyController.controller('YyFqIndexController', ['$rootScope', '$scope', '$state', '$http', '$timeout', 'ToastService', 'currUserService', 'fqListService', function($rootScope, $scope, $state, $http, $timeout, ToastService, currUserService, fqListService) {
-
+yyController.controller('YyFqIndexController', ['$rootScope', '$scope', '$state', 'ToastService', 'currUserService', 'fqListService', 'Fq', 'User', function($rootScope, $scope, $state, ToastService, currUserService, fqListService, Fq, User) {
+    $scope.fqList = [];
     $scope.isOpen = false;
+    $scope.moreDataLoad = true;
+    var moreDataCanBeLoaded = true;
+    var pageIndex = 0;
+
+    Fq.selectedRouId = User.user.institution.rouId;
+
+    $scope.ROUList = angular.fromJson(User.user.institution.ROUs);
 
     $scope.$on('$ionicView.beforeLeave', function(scope, states) {
     });
@@ -372,73 +349,8 @@ yyController.controller('YyFqIndexController', ['$rootScope', '$scope', '$state'
             //$('.tab-nav').show();
         }
     }
-    function refreshFq(_ROUId) {
-        var _ROUId = _ROUId || 1;
-        var timeStamp = new Date().valueOf();
-        $http.get('data/fqIndex.json?timeStamp=' + timeStamp).success(function(data) {
-
-            var _ROUs = data.ROUs;
-            _ROUs.forEach(function(ROU) {
-                if(ROU.id == _ROUId) {
-                    $scope.list = ROU.fqIndexList;
-
-                    if(ROU.fqIndexList.length) {
-                        $scope.isListEmpty = false;
-                    } else {
-                        $scope.isListEmpty = true;
-                    }
-                    return;
-                }
-            });
-        }).error(function(data) {
-
-        });
-    }
-    function getROUFq(_ROUId) {
-        var _ROUId = _ROUId || 1;
-        var timeStamp = new Date().valueOf();
-        $http.get('data/fqIndex.json?timeStamp=' + timeStamp).success(function(data) {
-
-            var _ROUs = data.ROUs;
-            _ROUs.forEach(function(ROU) {
-                if(ROU.id == _ROUId) {
-                    $scope.list = ROU.fqIndexList;
-                    var listL = $scope.list.length;
-                    for(s in ROU.fqIndexList) {
-                        $scope.list[Number(listL) + Number(s)] = ROU.fqIndexList[s];
-                    }
-
-                    if(ROU.fqIndexList.length) {
-                        $scope.isListEmpty = false;
-                    } else {
-                        $scope.isListEmpty = true;
-                    }
-                    return;
-                }
-            });
-        }).error(function(data) {
-
-        });
-    };
-    function getROUList() {
-        var timeStamp = new Date().valueOf();
-        $http.get('data/fqIndex.json?timeStamp=' + timeStamp).success(function(data) {
-
-            var _ROUs = [];
-            data.ROUs.forEach(function(ROU) {
-                _ROUs.push({
-                    id: ROU.id,
-                    name: ROU.name
-                });
-            });
-            $scope.ROUList = _ROUs;
-            refreshFq();
-        }).error(function(data) {
-
-        });
-    }
-    getROUList();
-    $scope.ROUIdSelect = fqListService.getObj().ROUSIdSelect;
+    $scope.ROUIdSelect = Fq.selectedRouId;
+    $scope.ROUName = User.getRou(Fq.selectedRouId);
     $scope.myFq = function() {
         $state.go('tab.myFq');
     };
@@ -449,15 +361,35 @@ yyController.controller('YyFqIndexController', ['$rootScope', '$scope', '$state'
         ROUListToggle();
     };
     $scope.choseROU = function(_ROUid) {
-        fqListService.setInfo({'ROUSIdSelect': _ROUid}, function() {
-
-        });
-        //getROUFq(_ROUid);
-        //ROUListToggle();
+        Fq.selectedRouId = _ROUid;
     };
     $scope.selectROU = function() {
-        var _ROUId = fqListService.getObj().ROUSIdSelect;
-        refreshFq(_ROUId);
+        $scope.ROUIdSelect = Fq.selectedRouId;
+        $scope.ROUName = User.getRou(Fq.selectedRouId);
+
+        $scope.moreDataLoad = true;
+        pageIndex = 0;
+        moreDataCanBeLoaded = true;
+        Fq.fqs = [];
+        $scope.fqList = [];
+        Fq.getInsFq(pageIndex).then(function(data) {
+            if(data.length == 0) {
+                moreDataCanBeLoaded = false;
+                $scope.$broadcast('scroll.infiniteScrollComplete');
+                ToastService.showToast('没有更多了~', 'bottom');
+                return;
+            }
+            for(s in data) {
+                data[s].img = yyConfig.urls.imgUploadUrl + data[s].img;
+                data[s].time = data[s].time.substring(0, 10);
+                Fq.fqs.push(data[s]);
+            }
+            $scope.fqList = Fq.fqs;
+            pageIndex++;
+            $scope.$broadcast('scroll.infiniteScrollComplete');
+            ToastService.showToast('刷新成功', 'bottom');
+        });
+
         ROUListToggle();
     };
     
@@ -465,35 +397,75 @@ yyController.controller('YyFqIndexController', ['$rootScope', '$scope', '$state'
         //临时
         $state.go('tab.fqDetail', {'type': 'received', 'id': 1});
     };
-    $scope.doDpListRefresh = function() {
-        $timeout(function() {
-            getROUList();
-            $scope.$broadcast('scroll.refreshComplete');
-            ToastService.showToast('刷新成功', 'bottom');
-        }, 1000);
+    $scope.doROUListRefresh = function() {
+        $scope.ROUList = angular.fromJson(User.user.institution.ROUs);
+        $scope.$broadcast('scroll.refreshComplete');
+        ToastService.showToast('刷新成功', 'bottom');
     };
+
     $scope.doFqListRefresh = function() {
-        $timeout(function() {
-            var _ROUId = fqListService.getObj().ROUSIdSelect;
-            refreshFq(_ROUId);
-            $scope.$broadcast('scroll.refreshComplete');
+        $scope.moreDataLoad = true;
+        pageIndex = 0;
+        moreDataCanBeLoaded = true;
+        Fq.fqs = [];
+        $scope.fqList = [];
+        Fq.getInsFq(pageIndex).then(function(data) {
+            if(data.length == 0) {
+                moreDataCanBeLoaded = false;
+                $scope.$broadcast('scroll.infiniteScrollComplete');
+                ToastService.showToast('没有更多了~', 'bottom');
+                return;
+            }
+            for(s in data) {
+                data[s].img = yyConfig.urls.imgUploadUrl + data[s].img;
+                data[s].time = data[s].time.substring(0, 10);
+                Fq.fqs.push(data[s]);
+            }
+            $scope.fqList = Fq.fqs;
+            pageIndex++;
+            $scope.$broadcast('scroll.infiniteScrollComplete');
             ToastService.showToast('刷新成功', 'bottom');
-        }, 1000);
+        });
+
+
+        // $timeout(function() {
+        //     var _ROUId = fqListService.getObj().ROUSIdSelect;
+        //     refreshFq(_ROUId);
+        //     $scope.$broadcast('scroll.refreshComplete');
+        //     ToastService.showToast('刷新成功', 'bottom');
+        // }, 1000);
     };
     $scope.loadMore = function() {
-        $timeout(function() {
-            var _ROUId = fqListService.getObj().ROUSIdSelect;
-            getROUFq(_ROUId);
+
+        if(moreDataCanBeLoaded) {
+            Fq.getInsFq(pageIndex).then(function(data) {
+                if(data.length == 0) {
+                    moreDataCanBeLoaded = false;
+                    $scope.$broadcast('scroll.infiniteScrollComplete');
+                    ToastService.showToast('没有更多了~', 'bottom');
+                    return;
+                }
+                for(s in data) {
+                    data[s].img = yyConfig.urls.imgUploadUrl + data[s].img;
+                    data[s].time = data[s].time.substring(0, 10);
+                    Fq.fqs.push(data[s]);
+                }
+                $scope.fqList = Fq.fqs;
+                pageIndex++;
+                $scope.$broadcast('scroll.infiniteScrollComplete');
+            });
+        } else {
             $scope.$broadcast('scroll.infiniteScrollComplete');
-        }, 1000);
+            $scope.moreDataLoad = false;
+        }
     };
 }]);
 
-yyController.controller('YyFqSendController', ['$scope', '$state', '$http', 'sendFqService', function($scope, $state, $http, sendFqService) {
+yyController.controller('YyFqSendController', ['$scope', '$state', 'ToastService', 'sendFqService', 'Fq', function($scope, $state, ToastService, sendFqService, Fq) {
 
     $scope.whichActive = 'fq';
     $scope.$on('$ionicView.beforeEnter', function() {
-        $scope.sendPerson = sendFqService.sendFq;
+        $scope.sendPerson = Fq.send;
     });
 
 
@@ -509,7 +481,23 @@ yyController.controller('YyFqSendController', ['$scope', '$state', '$http', 'sen
         $state.go('tab.fqSelectDepartment');
     };
     $scope.send = function() {
-        $state.go('tab.fqSendBack');
+        if(Fq.send.receiveName == null) {
+            ToastService.showToast('请先选择赠予人~', 'bottom');
+            return;
+        }
+
+        var postObj = {
+            'img': null,
+            'title': '送给: ' + Fq.send.receiveName,
+            'subtitle': $scope.featureWords,
+            'content': $scope.featureWords
+        };
+        Fq.sendFq(postObj).then(function(data) {
+            if(data.status == yyConfig.codes.successStatus) {
+                ToastService.showToast('发送成功~', 'bottom');
+                $state.go('tab.fqSendBack');
+            }
+        });
     };
 }]);
 
@@ -537,8 +525,8 @@ yyController.controller('YyInviteTypesController', ['$scope', '$state', '$http',
 }]);
 
 yyController.controller('YyLoginController', ['$scope', '$state', 'currUserService', 'ToastService', '$ionicHistory', 'StorageService', 'User', 'AccountService', function($scope, $state, currUserService, ToastService, $ionicHistory, StorageService, User, AccountService) {
-    // $scope.username = 'Rookie_wan';
-    // $scope.password = '123456';
+    $scope.username = 'Rookie_wan';
+    $scope.password = '123456';
     // $scope.userPhoto = 'upload/user-header.png';
     var userPhoto;
 
@@ -610,7 +598,7 @@ yyController.controller('YyLoginController', ['$scope', '$state', 'currUserServi
     }
 }]);
 
-yyController.controller('YyMessageBoxController', ['$scope', '$state', '$stateParams', '$http', '$timeout', 'ToastService', function($scope, $state, $stateParams, $http, $timeout, ToastService) {
+yyController.controller('YyMessageBoxController', ['$scope', '$state', '$stateParams', '$timeout', 'ToastService', 'User', 'Msg', function($scope, $state, $stateParams, $timeout, ToastService, User, Msg) {
 
     $scope.isSysMenuOpen = false;
     $scope.$parent.myScrollOptions = {
@@ -621,25 +609,35 @@ yyController.controller('YyMessageBoxController', ['$scope', '$state', '$statePa
             }
         }
     };
+    $scope.lists = [];
+    angular.forEach(User.user.msg, function(oneMsg) {
+        $scope.lists.push(oneMsg);
+    });
+    console.log($scope.lists);
+    // $scope.lists = User.user.msg;
+    // $scope.lists[1].typeTopId = 10;
+    // $scope.lists[2].typeTopId = 2;
     var sysMenuOpts = [
         {
-            name: "置顶"
+            name: "置顶",
+            fun: "topMsg"
         },
         {
-            name: "删除消息"
+            name: "删除消息",
+            fun: "delMsg"
         },
         {
-            name: "标记已读"
+            name: "标记已读",
+            fun: "readMsg"
         }
     ];
     $scope.sysMenuOpts = sysMenuOpts;
     $scope.detail = function(articleId) {
         console.log(articleId);
-        $state.go('tab.messageDetail', {'articleId': articleId});
+        //$state.go('tab.messageDetail', {'articleId': articleId});
     };
     $scope.doNewMsg = function() {
-        console.log('newMsg');
-        $scope.isSysMenuOpen = true;
+        
     };
     $scope.doRefresh = function() {
         $timeout(function() {
@@ -647,41 +645,19 @@ yyController.controller('YyMessageBoxController', ['$scope', '$state', '$statePa
             ToastService.showToast('刷新成功', 'bottom');
         }, 1000);
     };
-    var timeStamp = new Date().valueOf();
-    $http.get('data/messageBox.json?timeStamp=' + timeStamp).success(function(data) {
-        $scope.lists = data.messages;
-    }).error(function(data) {});
-}]);
-yyController.controller('YyMessageDetailController', ['$scope', '$state', '$stateParams', '$http', function($scope, $state, $stateParams, $http) {
+    $scope.onHold = function(typeId) {
+        console.log('newMsg');
+        $scope.isSysMenuOpen = true;
+        Msg.setSelectedTypeId(typeId);
+    };
 
-    var articleId = 1;
-    /*if($stateParams) {
-        articleId = $stateParams.articleId;
-    }*/
-    if($stateParams.articleId) {
-        articleId = $stateParams.articleId;
-        console.log(articleId);
-    }
-    var timeStamp = new Date().valueOf();
-    $http.get(yyConfig.urls.baseUrl + 'A=getNewsDetail&articleId=' + articleId + '&timeStamp=' + timeStamp).success(function(data) {
-        data.imgUrl = yyConfig.urls.imgUploadUrl + data.imgUrl;
-        $scope.article = data;
-        console.log(data);
-    }).error(function(data) {
-        console.log('error: ' + data);
-    });
-    /*$http.get('data/messageDetail.json?timeStamp=' + timeStamp).success(function(data) {
-        var articles = data.articles;
-        for(s in articles) {
-            var article = articles[s];
-            if(article.id == articleId) {
-                $scope.article = article.detail;
-                return;
-            }
-        }
-    }).error(function(data) {
+    $scope.msgTop = function() {
 
-    });*/
+    };
+    // var timeStamp = new Date().valueOf();
+    // $http.get('data/messageBox.json?timeStamp=' + timeStamp).success(function(data) {
+    //     $scope.lists = data.messages;
+    // }).error(function(data) {});
 }]);
 yyController.controller('YyMoreController', ['$scope', '$state', '$http', '$ionicPopup', function($scope, $state, $http, $ionicPopup) {
 
@@ -749,25 +725,33 @@ yyController.controller('YyMyCompanyController', ['$scope', '$state', 'ToastServ
         $scope.user = {"insId": User.user.institution.insId};
     });
 }]);
-yyController.controller('YyMyFqController', ['$scope', '$state', '$http', '$timeout', 'ToastService', function($scope, $state, $http, $timeout, ToastService) {
+yyController.controller('YyMyFqController', ['$scope', '$state', '$http', '$timeout', 'ToastService', 'Fq', function($scope, $state, $http, $timeout, ToastService, Fq) {
+    var pageIndex = 0;
+    var moreDataCanBeLoaded = true;
+    $scope.moreDataLoad = true;
+    $scope.list = [];
+    Fq.myReceive = [];
+    Fq.mySend = [];
+    $scope.isReceive = true;
+    var currFqList = 'receive';//receive,send
 
     $scope.reActive = true;
-    getData('received', function(data) {
-        $scope.list = data;
-    });
+    // getData('received', function(data) {
+    //     $scope.list = data;
+    // });
     $scope.received = function() {
         $scope.reActive = true;
         $scope.seActive = false;
-        getData('received', function(data) {
-            $scope.list = data;
-        });
+        currFqList = 'receive';
+        $scope.list = Fq.myReceive;
+        $scope.isReceive = true;
     };
     $scope.sent = function() {
         $scope.seActive = true;
         $scope.reActive = false;
-        getData('sent', function(data) {
-            $scope.list = data;
-        });
+        currFqList = 'send';
+        $scope.list = Fq.mySend;
+        $scope.isReceive = false;
     };
     $scope.detail = function(id) {
         var type = '';
@@ -782,10 +766,7 @@ yyController.controller('YyMyFqController', ['$scope', '$state', '$http', '$time
         console.log('sendBack click!');
     };
     $scope.doRefresh = function() {
-        $timeout(function() {
-            $scope.$broadcast('scroll.refreshComplete');
-            ToastService.showToast('刷新成功', 'bottom');
-        }, 1000);
+        refresh();
     };
     function getData(opts, callback) {
         var timeStamp = new Date().valueOf();
@@ -803,6 +784,52 @@ yyController.controller('YyMyFqController', ['$scope', '$state', '$http', '$time
             }
             callback(returnStr);
         }).error(function(data) {});
+    }
+    $scope.loadMore = function() {
+        if(moreDataCanBeLoaded) {
+            Fq.getMyFq(pageIndex).then(function(hasNew) {
+                if(!hasNew.hasNewReceive && !hasNew.hasNewSend) {
+                    moreDataCanBeLoaded = false;
+                    $scope.$broadcast('scroll.infiniteScrollComplete');
+                    ToastService.showToast('没有更多了~', 'bottom');
+                    return;
+                }
+                if(currFqList == 'receive' && hasNew.hasNewReceive) {
+                    $scope.list = Fq.myReceive;
+                } else if(currFqList == 'send' && hasNew.hasNewSend) {
+                    $scope.list = Fq.mySend;
+                }
+                pageIndex++;
+                $scope.$broadcast('scroll.infiniteScrollComplete');
+            });
+        } else {
+            $scope.$broadcast('scroll.infiniteScrollComplete');
+            $scope.moreDataLoad = false;
+        }
+    };
+    function refresh() {
+        Fq.myReceive = [];
+        Fq.mySend = [];
+        $scope.moreDataLoad = true;
+        moreDataCanBeLoaded = true;
+        pageIndex = 0;
+        $scope.list = [];
+
+        Fq.getMyFq(pageIndex).then(function(hasNew) {
+            if(!hasNew.hasNewReceive && !hasNew.hasNewSend) {
+                moreDataCanBeLoaded = false;
+                $scope.$broadcast('scroll.infiniteScrollComplete');
+                ToastService.showToast('没有更多了~', 'bottom');
+                return;
+            }
+            if(currFqList == 'receive' && hasNew.hasNewReceive) {
+                $scope.list = Fq.myReceive;
+            } else if(currFqList == 'send' && hasNew.hasNewSend) {
+                $scope.list = Fq.mySend;
+            }
+            pageIndex++;
+            $scope.$broadcast('scroll.infiniteScrollComplete');
+        });
     }
 }]);
 yyController.controller('YyMyPasswordController', ['$scope', '$state', '$ionicHistory', 'currUserService', 'ToastService', 'AccountService', 'User', function($scope, $state, $ionicHistory, currUserService, ToastService, AccountService, User) {
@@ -860,7 +887,7 @@ yyController.controller('YyMyRoleController', ['$scope', '$state', 'ToastService
         });
     };
 }]);
-yyController.controller('YyMySexController', ['$scope', '$state', 'ToastService', '$ionicHistory', 'currUserService', 'AccountService', 'User', function($scope, $state, ToastService, $ionicHistory, currUserService, AccountService, User) {
+yyController.controller('YyMySexController', ['$scope', 'ToastService', '$ionicHistory', 'AccountService', 'User', function($scope, ToastService, $ionicHistory, AccountService, User) {
     $scope.sex = User.user.sex;
     $scope.changeSex = function(sex) {
         var postObj = {
@@ -875,20 +902,35 @@ yyController.controller('YyMySexController', ['$scope', '$state', 'ToastService'
                 });
             }
         });
-        updService.upd('updSex', postObj, function(data) {
-
-            
-        });
     };
 }]);
-yyController.controller('YyNewsIndexController', ['$scope', '$state', '$http', '$timeout', 'ToastService', function($scope, $state, $http, $timeout, ToastService) {
+yyController.controller('YyNewsDetailController', ['$scope', '$state', '$stateParams', 'News', function($scope, $state, $stateParams, News) {
+    
+    var articleId = 1;
+    if($stateParams.articleId) {
+        articleId = $stateParams.articleId;
+    }
+    News.getNewsById(articleId).then(function(data) {
+        News.readNews().then(function() {
+           data.readNum++;
+           $scope.article = data; 
+       });
+    });
+}]);
+yyController.controller('YyNewsIndexController', ['$scope', '$state', '$http', '$timeout', 'ToastService', 'News', function($scope, $state, $http, $timeout, ToastService, News) {
     $scope.bannerImage = 'upload/news-index-banner-0.png';
     $scope.bannerTitle = '放飞心中的梦想——丰收老师分享';
 
+    $scope.moreDataLoad = true;
+    var moreDataCanBeLoaded = true;
+    var pageIndex = 0;
+    $scope.lists = [];
     $scope.$on('$ionicView.beforeLeave', function(scope, states) {
     });
     $scope.$on('$ionicView.beforeEnter', function(scope, states) {
     });
+
+
 
     $scope.$parent.myScrollOptions = {
         'wrapper': {
@@ -899,35 +941,59 @@ yyController.controller('YyNewsIndexController', ['$scope', '$state', '$http', '
         }
     };
     $scope.detail = function(id) {
-        console.log('boom!!!');
-        $state.go('tab.messageDetail', {'articleId': id});
+        $state.go('tab.newsDetail', {'articleId': id});
     };
     $scope.message = function() {
         $state.go('tab.messageBox');
     };
     $scope.doRefresh = function() {
-        $timeout(function() {
-            refreshNews();
-            $scope.$broadcast('scroll.refreshComplete');
+        pageIndex = 0;
+        $scope.moreDataLoad = true;
+        moreDataCanBeLoaded = true;
+        $scope.lists = [];
+        News.getNews(pageIndex).then(function(data) {
+            if(data.length == 0) {
+                moreDataCanBeLoaded = false;
+                $scope.$broadcast('scroll.infiniteScrollComplete');
+                ToastService.showToast('没有更多了~', 'bottom');
+                return;
+            }
+            for(s in data) {
+                data[s].img = yyConfig.urls.imgUploadUrl + data[s].img;
+                data[s].time = data[s].time.substring(0, 10);
+                $scope.lists.push(data[s]);
+            }
+            News.sumNews = $scope.lists;
+            pageIndex++;
+            $scope.$broadcast('scroll.infiniteScrollComplete');
             ToastService.showToast('刷新成功', 'bottom');
-        }, 1000);
+        });
     };
+    
     $scope.loadMore = function() {
-        var timeStamp = new Date().valueOf();
-        $timeout(function() {
-            getNews(function(data) {
-                var listL = $scope.lists.length;
-                for(s in data) {
-                    data[s].imgUrl = yyConfig.urls.imgUploadUrl + data[s].imgUrl;
-                    data[s].time = data[s].time.substring(0, 10);
-                    $scope.lists[Number(listL) + Number(s)] = data[s];
+        if(moreDataCanBeLoaded) {
+            News.getNews(pageIndex).then(function(data) {
+                if(data.length == 0) {
+                    moreDataCanBeLoaded = false;
+                    $scope.$broadcast('scroll.infiniteScrollComplete');
+                    ToastService.showToast('没有更多了~', 'bottom');
+                    return;
                 }
+                for(s in data) {
+                    data[s].img = yyConfig.urls.imgUploadUrl + data[s].img;
+                    data[s].time = data[s].time.substring(0, 10);
+                    $scope.lists.push(data[s]);
+                }
+                News.sumNews = $scope.lists;
+                pageIndex++;
                 $scope.$broadcast('scroll.infiniteScrollComplete');
             });
-        }, 1000);
+        } else {
+            $scope.$broadcast('scroll.infiniteScrollComplete');
+            $scope.moreDataLoad = false;
+        }
         
     };
-    refreshNews();
     getBanner();
 
     function getNews(callbackData) {
@@ -1103,57 +1169,65 @@ yyController.controller('YyRegController', ['$scope', '$state', '$timeout', '$ht
 }]);
 
 
-yyController.controller('YyFqSendDepartmentController', ['$scope', '$state', '$http', 'currUserService', 'sendFqService', function($scope, $state, $http, currUserService, sendFqService) {
-    $scope.selectDepartment = function(ROUId, name) {
-        sendFqService.setInfo({'ROUId': ROUId, 'ROUName': name}, function(data) {
-            $state.go('tab.fqSelectPerson');
-        });
+yyController.controller('YyFqSendDepartmentController', ['$scope', '$state', '$http', 'currUserService', 'sendFqService', 'User', 'Fq', function($scope, $state, $http, currUserService, sendFqService, User, Fq) {
+    $scope.ROUList = angular.fromJson(User.user.institution.ROUs);
+
+    $scope.selectDepartment = function(ROUId) {
+        console.log(ROUId);
+        Fq.send.receiveRouId = ROUId;
+        $state.go('tab.fqSelectPerson');
+        // sendFqService.setInfo({'ROUId': ROUId, 'ROUName': name}, function(data) {
+        //     $state.go('tab.fqSelectPerson');
+        // });
     };
 
-    var timeStamp = new Date().valueOf();
-    $http.get('data/fqROUs.json?timeStamp=' + timeStamp).success(function(data) {
+    // var timeStamp = new Date().valueOf();
+    // $http.get('data/fqROUs.json?timeStamp=' + timeStamp).success(function(data) {
 
-        var _ROUs = [];
-        data.ROUs.forEach(function(ROU) {
-            _ROUs.push({
-                id: ROU.ROUId,
-                name: ROU.ROUName
-            });
-        });
-        $scope.ROUList = _ROUs;
-    }).error(function(data) {
+    //     var _ROUs = [];
+    //     data.ROUs.forEach(function(ROU) {
+    //         _ROUs.push({
+    //             id: ROU.ROUId,
+    //             name: ROU.ROUName
+    //         });
+    //     });
+    //     $scope.ROUList = _ROUs;
+    // }).error(function(data) {
 
-    });
+    // });
 }]);
 
-yyController.controller('YyFqSendPresonController', ['$ionicHistory', '$scope', '$state', '$window', '$http', 'currUserService', 'sendFqService', function($ionicHistory, $scope, $state, $window, $http, currUserService, sendFqService) {
-    $scope.checkPerson = sendFqService.sendFq.personName;
-    var timeStamp = new Date().valueOf();
-    $http.get('data/fqROUPerson.json?timeStamp=' + timeStamp).success(function(data) {
+yyController.controller('YyFqSendPresonController', ['$ionicHistory', '$scope', '$state', '$window', '$http', 'currUserService', 'sendFqService', 'AccountService', 'Fq', function($ionicHistory, $scope, $state, $window, $http, currUserService, sendFqService, AccountService, Fq) {
+    $scope.checkPersonId = Fq.send.receiveId;
 
-        var ROUId = sendFqService.sendFq.ROUId;
-        var people = [];
-        data.peopleList.forEach(function(person) {
-            if(person.ROUId == ROUId) {
-                people = person.people;
-                return;
-            }
-        });
-        $scope.peopleList = people;
-    }).error(function(data) {
-
+    AccountService.getPersonsByRouId().then(function(data) {
+        $scope.peopleList = data;
     });
+
+    // var timeStamp = new Date().valueOf();
+    // $http.get('data/fqROUPerson.json?timeStamp=' + timeStamp).success(function(data) {
+
+    //     var ROUId = sendFqService.sendFq.ROUId;
+    //     var people = [];
+    //     data.peopleList.forEach(function(person) {
+    //         if(person.ROUId == ROUId) {
+    //             people = person.people;
+    //             return;
+    //         }
+    //     });
+    //     $scope.peopleList = people;
+    // }).error(function(data) {
+
+    // });
     $scope.selectPerson = function(personId, personName) {
-        sendFqService.setInfo({'personId': personId,'personName': personName}, function(data) {
-            console.log(data);
-            alert('您选中了 ' + sendFqService.sendFq.ROUName + ' ROU 的 ' + sendFqService.sendFq.personName);
-
-            $ionicHistory.goBack(-2);
-        });
+        Fq.send.receiveId = personId;
+        Fq.send.receiveName = personName;
+        //alert('您选中了 ' + Fq.send.receiveId + ' ROU 的 ' + Fq.send.receiveName);
+        $ionicHistory.goBack(-2);
     };
 }]);
 
-yyController.controller('YyUserController', ['$scope', '$state', '$stateParams', '$ionicGesture', 'getCurrUserService', 'currUserService', 'User', 'ProfileService', 'Institutions', function($scope, $state, $stateParams, $ionicGesture, getCurrUserService, currUserService, User, ProfileService, Institutions) {
+yyController.controller('YyUserController', ['$scope', '$state', '$stateParams', '$ionicGesture', 'getCurrUserService', 'currUserService', 'User', 'ProfileService', 'Institutions', 'AccountService', function($scope, $state, $stateParams, $ionicGesture, getCurrUserService, currUserService, User, ProfileService, Institutions, AccountService) {
     var userId;
     if($stateParams.userId) {
         userId = $stateParams.userId;
@@ -1290,10 +1364,8 @@ yyController.controller('YyUserInfoController', ['$scope', '$state', 'currUserSe
     $scope.sysMenuOpts = sysMenuOpts;
 
     $scope.user = User.user;
-    console.log(User.user);
     $scope.user.role = User.getRole(User.user.institution.roleId);
     $scope.user.ROU = User.getRou(User.user.institution.rouId);
-    console.log(User.user);
     $scope.selectPhoto = function() {
         $scope.isSysMenuOpen = true;
     };
@@ -1376,7 +1448,7 @@ yyController.controller('YyWgtPopupController', ['$scope', '$state', '$http', '$
         $scope.$parent.newVersion = false;
     };
 }]);
-yyController.controller('YyWgtSysMenuController', ['$scope', '$state', '$http', '$cordovaCamera', '$cordovaImagePicker', 'currUserService', 'uploadPicService', function($scope, $state, $http, $cordovaCamera, $cordovaImagePicker, currUserService, uploadPicService) {
+yyController.controller('YyWgtSysMenuController', ['$scope', '$state', '$cordovaCamera', '$cordovaImagePicker', 'currUserService', 'uploadPicService', 'Msg', function($scope, $state, $cordovaCamera, $cordovaImagePicker, currUserService, uploadPicService, Msg) {
     $scope.cancle = function() {
         $scope.$parent.isSysMenuOpen = false;
         console.log('cancle');
@@ -1409,6 +1481,11 @@ yyController.controller('YyWgtSysMenuController', ['$scope', '$state', '$http', 
                     });
                     $scope.cancle();
                 }, function(error) {});
+                break;
+            case 'topMsg':
+
+                Msg.setMsgTop();
+                $scope.cancle();
                 break;
             default:
 

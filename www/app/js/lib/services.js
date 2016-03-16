@@ -142,12 +142,12 @@ yyServices.factory('uploadPicService', ['$http', function(){
 yyServices.factory('ToastService', ['$cordovaToast', function($cordovaToast) {
     return {
         showToast: function(content, pos) {
-            //console.log(content);
-            try {
-                $cordovaToast.show(content, 'short', pos);
-            }catch(error) {
-                console.log(content);
-            }
+            console.log(content);
+            // try {
+            //     $cordovaToast.show(content, 'short', pos);
+            // }catch(error) {
+            //     console.log(content);
+            // }
         }
     };
 }]);
@@ -185,6 +185,10 @@ yyServices.factory('User', ['$q', 'StorageService', function($q, StorageService)
                 {"id": 2,"name": "队员"},
                 {"id": 3,"name": "队长"},
                 {"id": 4,"name": "教练"}
+            ],
+            msgType: [
+                {"id": 1,"name": "notice","icon": "icon-msgbox-notice"},
+                {"id": 2,"name": "birthday","icon": "icon-msgbox-birthday"}
             ],
             myCreate: [],
             myIn: []
@@ -253,7 +257,7 @@ yyServices.factory('User', ['$q', 'StorageService', function($q, StorageService)
 /*
     account
  */
-yyServices.factory('AccountService', ['$http', '$q', '$timeout', 'User', 'Institutions', function($http, $q, $timeout, User, Institutions) {
+yyServices.factory('AccountService', ['$http', '$q', '$timeout', 'User', 'Institutions', 'Msg', 'Fq', function($http, $q, $timeout, User, Institutions, Msg, Fq) {
     var o ={};
 
     o.login = function(loginUser) {
@@ -285,9 +289,8 @@ yyServices.factory('AccountService', ['$http', '$q', '$timeout', 'User', 'Instit
         $http({
             method: 'POST',
             url: yyConfig.urls.baseUrl + 'A=' + opt + '&userId=' + User.user.userId,
-            params: {
-                'postdata': postObj
-            }
+            data: postObj,
+            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).success(function(data) {
             dtd.resolve(data);
         });
@@ -313,17 +316,25 @@ yyServices.factory('AccountService', ['$http', '$q', '$timeout', 'User', 'Instit
                 var roleName = User.getRole(institution.roleId);
 
                 angular.extend(User.user, {"institutionId": insId,"institutionName": institution.name, "institution": institution, "role": roleName});
-
-                User.save(User).then(function() {
-                    console.log(User);
-                    dtd.resolve();
+                Msg.getMsg().then(function() {
+                    User.save(User).then(function() {
+                        console.log(User);
+                        dtd.resolve();
+                    });
                 });
+                
                 //return;  
             }
         });
         return dtd.promise;
     };
-
+    o.getPersonsByRouId = function() {
+        var dtd = $q.defer();
+        $http.get(yyConfig.urls.baseUrl + 'A=getPersonsByRouId&insId=' + User.user.institution.insId + '&rouId=' + Fq.send.receiveRouId).success(function(data) {
+            dtd.resolve(data);
+        });
+        return dtd.promise;
+    };
     return o;
 }]);
 
@@ -386,29 +397,116 @@ yyServices.factory('StorageService', ['$q', function($q) {
     fq
  */
 
-yyServices.factory('Fq', ['$q', 'User', function($q, User){
-    var o = {};
+yyServices.factory('Fq', ['$q', '$http', 'User', function($q, $http, User){
+    var o = {
+        mySend: [],
+        myReceive: [],
+        fqs: [],
+        fqIndexCount: 4,
+        fqMyCount: 5,
+        selectedRouId: 1,
+        send: {
+            receiveRouId: null,
+            receiveId: null,
+            receiveName: null
+        }
+    };
 
-    o.getUserFq = function() {
+    o.getInsFq = function(pageIndex) {
         var dtd = $q.defer();
 
-        $http.get(yyConfig.urls.baseUrl + 'A=getUserFq').success(function(Fqs) {
-            var currUser;
-            angular.forEach(userInfos, function(user) {
-                if(loginUser.username==user.username){
-                    hasUser = true;
-                    currUser = user;
-                    return;
-                }
-            });
-            if(hasUser) {
-                dtd.resolve(currUser);
-            } else {
-                dtd.reject();
-            }
+        $http.get(yyConfig.urls.baseUrl + 'A=getInsFq&insId=' + User.user.institution.insId + '&pageIndex=' + pageIndex + '&fqIndexCount=' + o.fqIndexCount + '&rouId=' + o.selectedRouId).success(function(data) {
+            dtd.resolve(data);
         }).error(function(data) {
             console.log('error' + data);
-        });       
+        });
+
+        // $http.get(yyConfig.urls.baseUrl + 'A=getInsFq').success(function(Fqs) {
+        //     var currUser;
+        //     angular.forEach(userInfos, function(user) {
+        //         if(loginUser.username==user.username){
+        //             hasUser = true;
+        //             currUser = user;
+        //             return;
+        //         }
+        //     });
+        //     if(hasUser) {
+        //         dtd.resolve(currUser);
+        //     } else {
+        //         dtd.reject();
+        //     }
+        // }).error(function(data) {
+        //     console.log('error' + data);
+        // });
+        return dtd.promise;
+    };
+    o.getMyFq = function(pageIndex) {
+        var dtd = $q.defer();
+        $http.get(yyConfig.urls.baseUrl + 'A=getMyFq&insId=' + User.user.institution.insId + '&pageIndex=' + pageIndex + '&fqMyCount=' + o.fqMyCount + '&rouId=' + o.selectedRouId + '&userId=' + User.user.id).success(function(data) {
+            var _a = {
+                'hasNewReceive': false,
+                'hasNewSend': false
+            }
+            angular.forEach(data, function(oneFq) {
+
+                oneFq.img = yyConfig.urls.imgUploadUrl + oneFq.img;
+                oneFq.time = oneFq.time.substring(0, 10);
+
+                if(oneFq.sendId == User.user.id) {
+                    o.mySend.push(oneFq);
+                    _a.hasNewSend = true;
+                } else if(oneFq.receiveId == User.user.id) {
+                    o.myReceive.push(oneFq);
+                    _a.hasNewReceive = true;
+                }
+            });
+            dtd.resolve(_a);
+        });
+        return dtd.promise;
+    };
+    o.sendFq = function(postObj) {
+        var dtd = $q.defer();
+        $http({
+            method: 'post',
+            url: yyConfig.urls.baseUrl + 'A=sendFq&userId=' + User.user.userId + '&insId=' + User.user.institution.insId + '&receiveId=' + o.send.receiveId + '&receiveRouId=' + o.send.receiveRouId,
+            data: postObj,
+            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).success(function(data) {
+            dtd.resolve(data);
+        });
+        return dtd.promise;
+    };
+    o.getFqDetail = function(id) {
+        var dtd = $q.defer();
+        $http.get(yyConfig.urls.baseUrl + 'A=getFqDetail&fqId=' + id).success(function(data) {
+            var oneFq = data[0];
+            oneFq.img = yyConfig.urls.imgUploadUrl + oneFq.img;
+            oneFq.senderImg = yyConfig.urls.imgUploadUrl + oneFq.senderImg;
+
+            oneFq.RouName = User.getRou(oneFq.senderRouId);
+
+            o.getFqReply(id).then(function(replys) {
+                oneFq.replys = replys;
+                dtd.resolve(oneFq);
+            });
+
+            
+        });
+        // var searchArr = o.mySend.concat(o.myReceive);
+        // console.log(searchArr);
+        // angular.forEach(searchArr, function(oneFq) {
+        //     if(oneFq.id == id) {
+        //         dtd.resolve(oneFq);
+        //     }
+        // });
+        return dtd.promise;
+    };
+    o.getFqReply = function(id) {
+        var dtd = $q.defer();
+        $http.get(yyConfig.urls.baseUrl + 'A=getFqReply&fqId=' + id).success(function(data) {
+            dtd.resolve(data);
+        });
+        return dtd.promise;
     };
     return o;
 }])
@@ -416,7 +514,7 @@ yyServices.factory('Fq', ['$q', 'User', function($q, User){
 /*
     institutions
  */
-yyServices.factory('Institutions', ['$q', '$http', 'User', function($q, $http, User){
+yyServices.factory('Institutions', ['$q', '$http', 'User', 'Msg', function($q, $http, User, Msg){
     var o = {
         myCreate: [],
         myIn: []
@@ -425,15 +523,13 @@ yyServices.factory('Institutions', ['$q', '$http', 'User', function($q, $http, U
     o.create = function (postObj) {
         var dtd = $q.defer();
         $http({
-            method: 'POST',
+            method: 'post',
             url: yyConfig.urls.baseUrl + 'A=createInstitution&userId=' + User.user.userId,
-            params: {
-                'postdata': postObj
-            }
+            data: postObj,
+            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).success(function(data) {
             dtd.resolve(data);
         });
-
         return dtd.promise;
     };
 
@@ -442,18 +538,20 @@ yyServices.factory('Institutions', ['$q', '$http', 'User', function($q, $http, U
         if(arguments[0]) {
             var insId = arguments[0];
             $http.get(yyConfig.urls.baseUrl + 'A=getInstitutionByInsId&userId=' + User.user.userId + '&insId=' + insId).success(function(data) {
+
                 var roleName = User.getRole(data.roleId, angular.fromJson(data.roles));
                 //angular.extend(User.user, {"institution": data, "role": roleName});
                 angular.extend(User.user, {"institution": data});
-
-                User.save(User).then(function() {
-                    dtd.resolve(); 
+                console.log(data);
+                Msg.getMsg().then(function() {
+                    User.save(User).then(function() {
+                        dtd.resolve(); 
+                    });
                 });
+                
             });
         } else {
             $http.get(yyConfig.urls.baseUrl + 'A=getInstitution&userId=' + User.user.userId).success(function(data) {
-                console.log('data');
-                console.log(data);
                 var myCreate = [];
                     myIn = [];
                 angular.forEach(data, function(insititution) {
@@ -487,7 +585,6 @@ yyServices.factory('Institutions', ['$q', '$http', 'User', function($q, $http, U
         var dtd = $q.defer();
 
         $http.get(yyConfig.urls.baseUrl + 'A=checkInsRepeat&insName=' + institutionName).success(function(data) {
-            console.log(data.length);
             if(data.length) {
                 dtd.resolve();
             } else {
@@ -503,9 +600,8 @@ yyServices.factory('Institutions', ['$q', '$http', 'User', function($q, $http, U
         $http({
             method: 'POST',
             url: yyConfig.urls.baseUrl + 'A=addToInstitution&userId=' + User.user.userId,
-            params: {
-                'postdata': postObj
-            }
+            data: postObj,
+            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).success(function(data) {
             dtd.resolve(data);
         });
@@ -518,9 +614,97 @@ yyServices.factory('Institutions', ['$q', '$http', 'User', function($q, $http, U
 /*
     msg
  */
-yyServices.factory('Msg', ['$q', function($q){
-    var o = {};
+yyServices.factory('Msg', ['$q', '$http', 'User', function($q, $http, User){
+    var o = {
+        msgs: {}
+    };
+    o.getMsg = function() {
+        var dtd = $q.defer();
+        $http.get(yyConfig.urls.baseUrl + 'A=getMsg&userId=' + User.user.userId + '&insId=' + User.user.institution.id).success(function(data) {
+            var msgtype = angular.fromJson(User.user.institution.msgType);
+            var msg = {};
 
+            angular.forEach(msgtype, function(oneMsgtype) {
+                    msg[oneMsgtype.id] = {};
+                    msg[oneMsgtype.id].icon = oneMsgtype.icon;
+                    msg[oneMsgtype.id].name = oneMsgtype.name;
+                    msg[oneMsgtype.id].msgs = [];
+                    msg[oneMsgtype.id].unReadNum = 0;
+            })
+            angular.forEach(data, function(oneMsg) {
+                if(oneMsg.isRead == 0) {
+                    msg[oneMsg.typeId].unReadNum++;
+                }
+                msg[oneMsg.typeId].msgs.push(oneMsg);
+                angular.extend(msg[oneMsg.typeId], oneMsg);
+            });
+            console.log(msg);
+            // angular.forEach(data, function(oneMsg) {
+            //     angular.forEach(msgtype, function(oneMsgtype) {
+            //         if(oneMsgtype.id == oneMsg.typeId) {
+            //             msg[oneMsgtype.typeId] = [];
+            //             oneMsg.typeName = oneMsgtype.name;
+            //             oneMsg.icon = oneMsgtype.icon;
+            //             msg.push(oneMsg);
+            //         }
+            //     });
+            // });
+            //var date = new Date(msg[0].time);
+            //if() 需要判断 与当前时间的关系
+            //console.log(date.getHours());
+            angular.extend(User.user, {'msg': msg});
+            o.msgs = msg;
+            dtd.resolve();
+        });
+        return dtd.promise;
+    };
+
+    o.setMsgTop = function() {
+        angular.forEach(User.user.msg, function(msg) {
+            if(msg.typeId == o.selectedTypeId) {
+                msg.typeTopId = -2;
+            }
+        });
+        console.log(User.user.msg);
+    }
+    o.setSelectedTypeId = function(typeId) {
+        o.selectedTypeId = typeId;
+    };
+    return o;
+}])
+
+/**
+ * news
+ */
+yyServices.factory('News', ['$q', '$http', 'User', function($q, $http, User){
+    var o = {
+        maxCounts: 4,
+        sumNews: []
+    };
+
+    o.getNews = function(pageIndex) {
+        var dtd = $q.defer();
+        $http.get(yyConfig.urls.baseUrl + 'A=getNews&insId=' + User.user.institution.insId + '&pageIndex=' + pageIndex + '&maxCounts=' + o.maxCounts).success(function(data) {
+            dtd.resolve(data);
+        });
+        return dtd.promise;
+    };
+    o.readNews = function() {
+        var dtd = $q.defer();
+        $http.get(yyConfig.urls.baseUrl + 'A=readNews&insId=' + User.user.institution.insId).success(function(data) {
+            dtd.resolve(data);
+        });
+        return dtd.promise;
+    };
+    o.getNewsById = function(id) {
+        var dtd = $q.defer();
+        angular.forEach(o.sumNews, function(oneNews) {
+            if(oneNews.id == id) {
+                dtd.resolve(oneNews);
+            }
+        });
+        return dtd.promise;
+    };
     return o;
 }])
 /*yyServices.factory('helpTools', ['$q', function($q){

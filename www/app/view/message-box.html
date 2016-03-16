@@ -15,15 +15,15 @@
               pulling-text="下拉刷新"
               on-refresh="doRefresh()"
           ></ion-refresher>
-          <div class="item-list" ng-repeat="listItem in lists track by $index">
-            <div class="item"><i class="icon {{listItem.icon}}"></i>
+          <div class="item-list">
+            <div class="item" ng-repeat="listItem in lists track by $index | orderBy: 'listItem.typeTopId'" on-hold="onHold(listItem.typeId);" ng-if="!!listItem.id"><i class="icon {{listItem.icon}}"></i>
               <div class="item-body">
                 <div class="item-header">
-                  <h5 class="item-title" ng-click="detail(listItem.id)">{{listItem.title}}</h5><span class="item-time">{{listItem.time}}</span>
+                  <h5 class="item-title" ng-click="detail(listItem.typeId)">{{listItem.title}}{{listItem.typeTopId}}</h5><span class="item-time">{{listItem.time}}</span>
                 </div>
                 <div class="item-con">
-                  <div class="item-summary">{{listItem.summary}}</div>
-                  <div class="item-num" ng-if="listItem.isNew" ng-click="doNewMsg()">{{listItem.num}}</div>
+                  <div class="item-summary">{{listItem.content}}</div>
+                  <div class="item-num" ng-if="listItem.unReadNum > 0" ng-click="doNewMsg()">{{listItem.unReadNum}}</div>
                 </div>
               </div>
             </div>

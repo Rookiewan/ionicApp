@@ -13,17 +13,17 @@
                 <div class="form-sub-title">我创建的机构</div>
                 <div class="arrow-item-list radio-list">
                     <div class="arrow-item" ng-click="select(myCreate.insId)" ng-repeat="myCreate in institutions.myCreate track by $index">
-                        <input type="radio" name="selectIns" ng-checked="myCreate.id == user.insId">
+                        <input type="radio" name="selectIns" ng-show="myCreate.createStatus != 0" ng-checked="myCreate.id == user.insId">
                         <div class="item-title">{{myCreate.name}}</div>
-                        <div class="item-text"><span ng-show="myCreate.creatStatus == 0">审核中</span><i class="icon icon-radio"></i></div>
+                        <div class="item-text"><span ng-show="myCreate.createStatus == 0">审核中</span><i class="icon icon-radio" ng-show="myCreate.createStatus == 1"></i></div>
                     </div>
                 </div>
                 <div class="form-sub-title">我加入的机构</div>
                 <div class="arrow-item-list radio-list">
                     <div class="arrow-item" ng-click="select(myIn.insId)" ng-repeat="myIn in institutions.myIn track by $index">
-                        <input type="radio" name="selectIns" ng-show="myCreate.creatStatus != 0" ng-checked="myIn.id == user.insId">
+                        <input type="radio" name="selectIns" ng-show="myIn.createStatus != 0" ng-checked="myIn.id == user.insId">
                         <div class="item-title">{{myIn.name}}</div>
-                        <div class="item-text"><span ng-show="myCreate.creatStatus == 0">审核中</span><i class="icon icon-radio"></i></div>
+                        <div class="item-text"><span ng-show="myIn.createStatus == 0">审核中</span><i class="icon icon-radio" ng-show="myIn.createStatus == 1"></i></div>
                     </div>
                     <!-- <div class="arrow-item">
             <input type="radio">

@@ -7,7 +7,7 @@
                     <i class="icon icon-nav-return"></i>
                 </a>
             </div>
-            <h1 class="title">选择赠予人</h1>
+            <h1 class="title">选择赠予部门</h1>
             <div class="nav-opt"></div>
         </div>
         <!-- } -->
@@ -15,7 +15,7 @@
         <div class="page-contrain">
             <ion-scroll>
                 <div class="arrow-item-list">
-                    <div class="arrow-item" ng-repeat="ROU in ROUList track by $index" ng-click="selectDepartment(ROU.id, ROU.name)">
+                    <div class="arrow-item" ng-repeat="ROU in ROUList track by $index" ng-click="selectDepartment(ROU.id)">
                         <div class="item-title">{{ROU.name}}ROU</div>
                         <i class="icon icon-item-arrow"></i>
                     </div>

@@ -39,7 +39,7 @@
 }
 
 .wgt-news-index-content {
-    //margin-bottom: 2.84419rem;
+    margin-bottom: 3rem;
 
     .item-title {
         font-family: "Microsoft YaHei", Helvetica, Arial, sans-serif;
@@ -53,11 +53,15 @@
         font-size: 0.74813rem;
     }
 }
-
+.wgt-fq-list {
+    .item-summary {
+        min-height: 1.7rem;
+    }
+}
 .wgt-fq-news {
     .wgt-fq-list {
-        margin-bottom: 0.3rem;
-
+        //margin-bottom: 0.3rem;
+        margin-bottom: 3rem;
         .item-list {
             //margin-bottom: 2.75rem;
        
@@ -126,6 +130,7 @@
     -webkit-transform: translateY(-110%);
     -webkit-transition: all 0.3s;
     top: 1.42095rem !important;
+    margin-bottom: 3rem;
 }
 
 .wgt-message-detail {
